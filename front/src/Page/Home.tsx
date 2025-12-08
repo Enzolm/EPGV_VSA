@@ -1,11 +1,13 @@
+import Footer from "../composant/Footer";
 import Navbar from "../composant/Navbar";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import { Heart, PersonStanding, HandFist } from "lucide-react";
+import m_b from "../assets/M_B.jpg";
 
 function Home() {
   return (
     <>
       <Navbar />
-      <section className="px-4 sm:px-10 py-10 md:py-20">
+      <section id="Accueil" className="px-4 sm:px-10 py-10 md:py-20">
         <div className="@container">
           <div className="@[480px]:p-0">
             <div
@@ -33,23 +35,119 @@ function Home() {
         </div>
       </section>
 
-      <section className="px-4 sm:px-10 py-10 md:py-20">
+      <section id="NosValeurs" className="px-4 sm:px-10 py-10 lg:py-20 w-full">
         <h1 className="text-4xl font-extrabold">Nos valeurs</h1>
         <p className="text-green-900/90">
           Plus qu’un sport, une pratique ouverte à tous, où chacun progresse à
           son propre rythme
         </p>
-        <div>
-          <div className="bg-gray-50 w-2xs border-2 border-green-600/70 rounded-lg p-4 mt-6 flex flex-col gap-4">
-            <FavoriteIcon sx={{ fontSize: 40, color: "green" }} />
+        <div className="flex flex-wrap justify-evenly gap-6 w-full">
+          <div className="bg-gray-50 max-w-96  border-1 border-black/10 shadow rounded-lg p-4 mt-6 flex flex-col gap-4">
+            <Heart size={40} color="green" />
             <h2 className="text-2xl font-semibold">Bien-être</h2>
             <p className="text-green-900/90">
               Parce que chaque séance vise à améliorer la santé, réduire le
               stress et favoriser une meilleure qualité de vie.
             </p>
           </div>
+          <div className="bg-gray-50 max-w-96  border-1 border-black/10 shadow rounded-lg p-4 mt-6 flex flex-col gap-4">
+            <PersonStanding size={40} color="green" />
+            <h2 className="text-2xl font-semibold">Convivialité</h2>
+            <p className="text-green-900/90">
+              Des cours collectifs où l'on se sent bien, pour créer du lien et
+              s'amuser.{" "}
+            </p>
+          </div>
+          <div className="bg-gray-50 max-w-96  border-1 border-black/10 shadow rounded-lg p-4 mt-6 flex flex-col gap-4">
+            <HandFist size={40} color="green" />
+            <h2 className="text-2xl font-semibold">Accessibilité</h2>
+            <p className="text-green-900/90">
+              Des tarifs abordables et des horaires flexibles pour que chacun
+              puisse nous rejoindre.
+            </p>
+          </div>
         </div>
       </section>
+      <section id="Equipe">
+        <div className="px-4  w-full ">
+          <div className="bg-white rounded-lg text-center p-10 shadow-md">
+            <h1 className="text-4xl font-extrabold">Notre Équipe</h1>
+            <p>
+              Une animatrice passionnés et des membres du bureau engagés pour
+              vous accompagner.
+            </p>
+
+            <div className="flex flex-col justify-center align-middle items-center md:flex-row mt-10 gap-8">
+              <img
+                className=" rounded-full h-40 w-40 object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3w5ONe-NErKmCaUM_nPfysd_Ak2uh2oSa_SpcV19yeE5KGhHnIGYd7UmR7uz-_gTJPg9fctnVhiHhbCu2xetZucMPb34WPryzzEvicIp3tE0VBkzm6h6bPEyoCpF-PFhvc7ueIxDatVQV6UBO6FFtPS-sZDOlCH4s5MoUGDK-SeyZRRdlZMOKkxhU-j7Vs9byKYV1SRWht1agltLaaXszh0KSRX_xviawS-z1F-2rB8icsTm2HBKBDwi7mY6PM-EMf48gc07rOw0"
+                alt="Animatrice"
+              />
+              <div>
+                <h2 className="text-2xl font-semibold mt-4 text-left">
+                  Christelle
+                </h2>
+                <p className="text-green-900/90 text-left">
+                  Professeur Instructeur Sportif depuis 1999 et diplômée BP JEPS
+                  APT, Christelle — adhérente à la Fédération Française EPGV —
+                  reprend la relève. Son concept : « Lier le corps, l’esprit et
+                  le mental ». Elle accompagne chacun à trouver son équilibre
+                  grâce à des exercices de renforcement ou de relâchement
+                  musculaire, basés sur des critères posturaux. Son programme,
+                  en harmonie avec Gym/Santé, mêle Yoga, Fitness et Pilates pour
+                  renforcer les abdos, soulager le dos, améliorer la silhouette
+                  et développer souplesse et bien-être, avec douceur et
+                  précision..
+                </p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h2 className="text-center text-2xl font-semibold mt-4 mb-5">
+              Le bureau
+            </h2>
+            <div className="flex flex-wrap justify-evenly gap-4">
+              <div className="flex flex-col align-middle items-center justify-center">
+                <img
+                  className="rounded-full h-35 w-35 object-cover"
+                  src={m_b}
+                  alt="Présidente"
+                />
+                <h3>Michèle BEMILLI</h3>
+                <p className="text-green-600">Présidente</p>
+              </div>
+              <div className="flex flex-col align-middle items-center justify-center">
+                <img
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzyNbJcTKaW6Ax5TvxTSIRUnbfN8kIdcnACCYRdWsbfpbUvONHrJ3u1yznW71jHECh-JizVzQj7d_Lklhx6aXps1W0ZAQBYdEvNZletjtTsSfT_sedUCCTPS6HKfupOWC4isBEU_x-n1rn-OL3We1L-hU17TtDoUlyCdMDeuvu8iOWAuRNUMo460S387iDWnwan5obWY3iAakZNL7AXsvF2mDfD0UrS33o2ofCdAQ6lJklb4z3OO9aQdtzAZ1HbZNLWNn2G-BVfsI"
+                  alt="Trésorière"
+                  className="rounded-full h-35 w-35 object-cover"
+                />
+                <h3>Marie-Claude SEPTIER</h3>
+                <p className="text-green-600">Trésorière</p>
+              </div>
+              <div className="flex flex-col align-middle items-center justify-center">
+                <img
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgru4Xee4u2Vbnm2s6Z7LUbKBUqJLX7Lw6p_4CewYiUiAYJkhI3KDCA0LPL6Gua9RcUjWXxS2uw8Ng6trbmBBEZBF99UKxG5UGDwKjfWydWiKmaiPIzYhHk3XUqbC0eTaJ_FEr2yEkFwXbXFxHPm3UXdtuG0zxqTXAxfRU5h0NfxbR6GktfPGS0c0Lv0ZROAfo1K_tJBMY6I7IoHnCXUdJ1dN0JuamAGS8a8kWXwHHaDsF8hhnEBXLyXDBXPqKycs8QMLlHicsnlU"
+                  alt="Secrétaire"
+                  className="rounded-full h-35 w-35 object-cover"
+                />
+                <h3>Joséphine MIART</h3>
+                <p className="text-green-600">Secrétaire</p>
+              </div>
+              <div className="flex flex-col align-middle items-center justify-center">
+                <img
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuADq0l5ePLjMGry5cEnvk9tJWkSt7Zkpt3mCZNz_mqRJvkTJmHpmTvTgN60fGIy6YqV0IO-RvvXyPNw5PUEDCfHPyRliDTQICn6PMnZ1HO_tkQMN_69SCPWxblgstCjQ0ClD5cq5zI2GU4hAkGpiybGS8YBKHzyG2vN_C_047f_6qY1pZUkOuna3cdZNP7tlzIquMLTh4NsDCzEZQyfv1Xs6dsVSpRL-vlw0lvE2XDtJ4hv7E2mReuQelV0cm5btgfrcuVcO8XBNhY"
+                  alt="Secrétaire"
+                  className="rounded-full h-35 w-35 object-cover"
+                />
+                <h3>Cécile BEMILLI</h3>
+                <p className="text-green-600">Secrétaire Adjointe</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <Footer />
     </>
   );
 }

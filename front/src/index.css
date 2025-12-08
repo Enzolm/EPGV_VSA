@@ -2,13 +2,13 @@
 @import "tailwindcss";
 
 :root {
-  font-family: "Lexend", "Lora", sans-serif;
+  /* font-family: "Lexend", "Lora", sans-serif; */
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #ffffff;
+  background-color: #f6f8f6;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -18,11 +18,7 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
   text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
 }
 
 body {
@@ -31,21 +27,29 @@ body {
   display: flex;
   min-width: 320px;
   min-height: 100vh;
+  font-family: "Lexend", sans-serif;
+  /* font-family: "Lexend"; */
 }
 
 h1 {
   line-height: 1.1;
+  font-family: "Lexend", sans-serif;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #ffffff;
-  }
+h2 {
+  line-height: 1.2;
+  font-family: "Lexend", sans-serif;
+}
+h3 {
+  line-height: 1.3;
+  font-weight: 700;
+  font-family: "Lexend", sans-serif;
+}
+
+.font-lexend {
+  font-family: "Lexend", sans-serif;
+}
+
+.font-lora {
+  font-family: "Lora", serif;
 }
