@@ -1,11 +1,23 @@
 import { useState } from "react";
-import { Badge } from "../../../components/base/badges/badges";
-import { SlideoutMenu } from "../../../components/application/slideout-menus/slideout-menu";
-import { Button } from "../../../components/base/buttons/button";
-import { Input } from "../../../components/base/input/input";
-import { Select } from "../../../components/base/select/select";
-import { FilePlus02, XClose, Check, Save01 } from "@untitledui/icons";
-import FileUploadProgressFill from "../../../composant/UploadFileComponents";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 
 function ActusGesiton() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,41 +30,26 @@ function ActusGesiton() {
 
   return (
     <>
-      <SlideoutMenu isOpen={isMenuOpen}>
-        <div slot="header" className="flex p-4 w-full justify-between">
-          <p className="text-2xl font-bold">Gestion des Actualités</p>
-          <Button
-            onClick={() => setIsMenuOpen(false)}
-            iconLeading={<XClose data-icon />}
-            color="tertiary"
-          ></Button>
-        </div>
-        <div slot="body" className="flex flex-col gap-4 p-4">
+      <Drawer open={isMenuOpen} onOpenChange={setIsMenuOpen} direction="right">
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+            <DrawerDescription>This action cannot be undone.</DrawerDescription>
+          </DrawerHeader>
           <div>
-            <Input
-              isRequired={true}
-              label="Titre de l'actualité"
-              type="text"
-              placeholder="Entrez le titre de l'actualité"
-            />
-            <Select
-              label="Catégorie"
-              items={items}
-              placeholder="Sélectionnez une catégorie"
-            >
-              {(item) => (
-                <Select.Item
-                  id={item.id}
-                  supportingText={item.supportingText}
-                  isDisabled={item.isDisabled}
-                  icon={item.icon}
-                  avatarUrl={item.avatarUrl}
-                >
-                  {item.label}
-                </Select.Item>
-              )}
+            <Input type="text" placeholder="Entrez le titre de l'actualité" />
+            <Select>
+              <SelectTrigger className="w-full mt-4">
+                <SelectValue placeholder="Sélectionnez le type d'actualité" />
+              </SelectTrigger>
+              <SelectContent>
+                {items.map((item) => (
+                  <SelectItem key={item.id} value={item.id}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
-            <FileUploadProgressFill />
           </div>
           <div className="flex gap-4">
             <Button
@@ -62,15 +59,17 @@ function ActusGesiton() {
             >
               Annuler
             </Button>
-            <Button iconLeading={<Save01 data-icon />} size="sm">
-              Brouillon
-            </Button>
-            <Button iconLeading={<Check data-icon />} size="sm">
-              Publier
-            </Button>
+            <Button size="sm">Brouillon</Button>
+            <Button size="sm">Publier</Button>
           </div>
-        </div>
-      </SlideoutMenu>
+          <DrawerFooter>
+            <Button>Submit</Button>
+            <DrawerClose>
+              <Button variant="outline">Cancel</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
 
       <section id="info" className="flex">
         <div>
@@ -86,7 +85,6 @@ function ActusGesiton() {
         <Button
           onClick={() => setIsMenuOpen(true)}
           className="mt-4 bg-green-900 text-white hover:bg-green-700 self-end"
-          iconLeading={<FilePlus02 data-icon />}
         >
           Ouvrir le menu de gestion
         </Button>
@@ -96,7 +94,7 @@ function ActusGesiton() {
           <img className="h-30" src="" alt="" />
           <div className="p-4">
             <h3>Titre actus</h3>
-            <Badge type="pill-color">01/01/2026</Badge>
+            <Badge>01/01/2026</Badge>
             <p className="line-clamp-3">
               Lorem, ipsum dolor sit amet consectetur adipisicing elit.
               Excepturi rem repudiandae delectus consequuntur eveniet omnis eos

@@ -1,9 +1,9 @@
 import Navbar from "../composant/Navbar";
-import { Input } from "../components/base/input/input";
-import { TextArea } from "../components/base/textarea/textarea";
-import { Button } from "../components/base/buttons/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 import { MapPin, Mail, Phone } from "lucide-react";
-import { Checkbox } from "../components/base/checkbox/checkbox";
+import { Checkbox } from "@/components/ui/checkbox";
 import Footer from "../composant/Footer";
 import m_b from "../assets/M_B.jpg";
 
@@ -27,41 +27,18 @@ const Contact = () => {
               <h2 className="text-xl font-bold">Envoyez-nous un message</h2>
               <div className="flex flex-col gap-4">
                 <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-                  <Input isRequired label="Prénom" placeholder="Votre prénom" />
-                  <Input isRequired label="Nom" placeholder="Votre nom" />
+                  <Input placeholder="Votre prénom" />
+                  <Input placeholder="Votre nom" />
                 </div>
-                <Input
-                  isRequired
-                  label="Email"
-                  type="email"
-                  placeholder="votre.email@exemple.com"
-                />
-                <Input
-                  isRequired
-                  label="Sujet"
-                  type="text"
-                  placeholder="Sujet de votre message"
-                />
-                <TextArea
-                  isRequired
-                  label="Message"
-                  type="text"
+                <Input type="email" placeholder="votre.email@exemple.com" />
+                <Input type="text" placeholder="Sujet de votre message" />
+                <Textarea
                   placeholder="Écrivez votre message ici..."
                   rows={3}
                   className="h-30"
                 />
               </div>
-              <Checkbox
-                isRequired
-                label={
-                  <span>
-                    En soumettant ce formulaire, j’accepte que les informations
-                    saisies soient utilisées afin de me recontacter dans le
-                    cadre du suivi de ma demande.
-                    <span className="text-red-600"> *</span>
-                  </span>
-                }
-              />
+              <Checkbox />
               <Button className="w-full mt-4">Envoyer</Button>
               <p className="text-xs">
                 <span className="text-red-600">*</span> Information(s)
@@ -85,7 +62,7 @@ const Contact = () => {
                   <Mail color="green" />
                   <div>
                     <p className="font-semibold">Email</p>
-                    <p>contact@gym-colontaire-vsa.fr</p>
+                    <p>contact@gym-volontaire-vsa.fr</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">

@@ -1,8 +1,6 @@
 import logo_sf from "../assets/logo_sf.png";
 import { useNavigate } from "react-router";
 import { useLocation } from "react-router";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 

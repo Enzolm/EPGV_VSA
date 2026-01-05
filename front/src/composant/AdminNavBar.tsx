@@ -1,5 +1,5 @@
 import logo_sf from "@/assets/logo_sf.png";
-import { Button } from "../components/base/buttons/button";
+import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import img_profile from "../assets/M_B.jpg";
 
