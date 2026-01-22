@@ -16,6 +16,47 @@ import api from "@/lib/axios"
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
+const pendingImageUploads = new Map<string, File>()
+
+const uploadImageFile = async (
+  file: File,
+  onProgress?: (event: { progress: number }) => void,
+  abortSignal?: AbortSignal
+): Promise<string> => {
+  // Validate file
+  if (!file) {
+    throw new Error("No file provided")
+  }
+
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error(
+      `File size exceeds maximum allowed (${MAX_FILE_SIZE / (1024 * 1024)}MB)`
+    )
+  }
+
+  const formData = new FormData()
+  formData.append("img", file)
+
+  const response = api.post("/upload", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+    onUploadProgress: (progressEvent) => {
+      if (onProgress && progressEvent.total) {
+        const progress = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total
+        )
+        onProgress({ progress })
+      }
+    },
+    signal: abortSignal,
+  })
+
+  const data = await response
+
+  return `${import.meta.env.VITE_URL_UPLOAD}/${data.data.filename}`
+}
+
 export const MAC_SYMBOLS: Record<string, string> = {
   mod: "⌘",
   command: "⌘",
@@ -362,7 +403,7 @@ export function selectionWithinConvertibleTypes(
 export const handleImageUpload = async (
   file: File,
   onProgress?: (event: { progress: number }) => void,
-  abortSignal?: AbortSignal
+  _abortSignal?: AbortSignal
 ): Promise<string> => {
   // Validate file
   if (!file) {
@@ -375,28 +416,57 @@ export const handleImageUpload = async (
     )
   }
 
-    const formData = new FormData()
-  formData.append("img", file)
+  const objectUrl = URL.createObjectURL(file)
+  pendingImageUploads.set(objectUrl, file)
 
-  const response = api.post("/upload", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    onUploadProgress: (progressEvent) => {
-      if (onProgress && progressEvent.total) {
-        const progress = Math.round(
-          (progressEvent.loaded * 100) / progressEvent.total
-        )
-        onProgress({ progress })
+  if (onProgress) {
+    onProgress({ progress: 100 })
+  }
+
+  return objectUrl
+
+}
+
+export const flushPendingImageUploads = async (editor: Editor) => {
+  if (!editor) return
+
+  const sourcesToUpload: string[] = []
+
+  editor.state.doc.descendants((node) => {
+    if (node.type.name === "image" && typeof node.attrs?.src === "string") {
+      const src = node.attrs.src
+      if (pendingImageUploads.has(src)) {
+        sourcesToUpload.push(src)
       }
-    },
-    signal: abortSignal,
+    }
+    return true
   })
 
-  const data = await response
+  for (const src of sourcesToUpload) {
+    const file = pendingImageUploads.get(src)
+    if (!file) continue
 
-   return `${import.meta.env.VITE_URL_UPLOAD}/${data.data.filename}`
+    const uploadedUrl = await uploadImageFile(file)
 
+    const targets: NodeWithPos[] = []
+    editor.state.doc.descendants((node, pos) => {
+      if (node.type.name === "image" && node.attrs?.src === src) {
+        targets.push({ node, pos })
+      }
+      return true
+    })
+
+    if (targets.length) {
+      const tr = editor.state.tr
+      const changed = updateNodesAttr(tr, targets, "src", uploadedUrl)
+      if (changed) {
+        editor.view.dispatch(tr)
+      }
+    }
+
+    pendingImageUploads.delete(src)
+    URL.revokeObjectURL(src)
+  }
 }
 
 type ProtocolOptions = {

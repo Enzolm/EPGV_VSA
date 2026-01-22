@@ -15,6 +15,7 @@ export interface Article {
 
 export const useArticleById = (id_publication: string | null) => {
   const [article, setArticle] = useState<Article | null>(null);
+  const [ imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,6 +28,7 @@ export const useArticleById = (id_publication: string | null) => {
                 setLoading(true);
                 const response = await api.get(`/publications/id/${id_publication}`);
                 setArticle(response.data.publication);
+                setImageUrl(response.data.imageUrl || null);
             } catch (err) {
                 setError("Erreur lors du chargement de l'article.");
             } finally {
@@ -37,7 +39,7 @@ export const useArticleById = (id_publication: string | null) => {
         fetchArticle();
     }, [id_publication]);
 
-    return { article, loading, error };
+    return { article, imageUrl, loading, error };
 };
 
 export const useCreateArticle = () => {
@@ -120,6 +122,39 @@ export const useAdminAllArticles = () => {
 
     return { articles, loading, error, refresh: fetchArticles };
 }   
+
+export const useUpdateArticle = (id_publication: string) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  const updateArticle = async (formData: FormData) => {
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      const response = await api.put(`/publications/update/${id_publication}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.data.success) {
+        setSuccess(true);
+      } else {
+        setError(response.data.message);
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de la mise à jour de l'article");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { loading, updateArticle, error, success };
+};
 
 export const useDeleteArticle = (id_publication: string) => {
     const [loading, setLoading] = useState(false);

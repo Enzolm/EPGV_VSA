@@ -9,6 +9,8 @@ router.get("/all", PublicationController.getAllPublications);
 
 router.get("/id/:id", PublicationController.getPublicationById);
 
+router.put("/update/:id", PublicationController.updatePublication);
+
 router.delete("/delete/:id", PublicationController.deletePublication);
 
 module.exports = router;

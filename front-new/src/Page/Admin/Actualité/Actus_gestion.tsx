@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import Actus_creation from "@/Page/Admin/Actualité/Actus_creation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAdminAllArticles, useDeleteArticle } from "@/hooks/useArticle";
@@ -22,7 +21,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import Actus_edition from "./Actus_Edition";
 import { toast } from "sonner";
 
 function ActusGesiton() {
@@ -138,6 +136,11 @@ function ActusGesiton() {
                 </div>
               </div>
             ))}
+          {!loading && articles.length === 0 && (
+            <p className=" mt-3 w-full text-center text-gray-500/50">
+              Aucune publication disponible.
+            </p>
+          )}
           {!loading &&
             articles.map((article) => (
               <div

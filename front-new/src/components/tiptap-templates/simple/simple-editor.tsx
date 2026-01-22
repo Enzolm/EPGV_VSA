@@ -232,7 +232,6 @@ export function SimpleEditor({ onEditorReady }: SimpleEditorProps) {
         onError: (error) => console.error("Upload failed:", error),
       }),
     ],
-    content,
   });
 
   const rect = useCursorVisibility({

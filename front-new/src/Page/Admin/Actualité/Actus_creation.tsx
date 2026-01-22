@@ -17,6 +17,7 @@ import type { Article } from "@/hooks/useArticle";
 import { useForm, Controller, type SubmitHandler } from "react-hook-form";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import type { Editor } from "@tiptap/core";
+import { flushPendingImageUploads } from "@/lib/tiptap-utils";
 
 function Actus_creation() {
   const location = useLocation();
@@ -25,8 +26,25 @@ function Actus_creation() {
   const { loading, createArticle, error, success } = useCreateArticle();
   const { register, handleSubmit, control } = useForm<Partial<Article>>();
   const [editorValue, setEditorValue] = useState<Editor | null>(null);
+  const [localPreview, setLocalPreview] = useState<string | null>(null);
 
-  const onSubmit: SubmitHandler<Partial<Article>> = (data) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const preview = URL.createObjectURL(file);
+      setLocalPreview(preview);
+    } else {
+      setLocalPreview(null);
+    }
+  };
+
+  const onSubmit: SubmitHandler<Partial<Article>> = async (data) => {
+    console.log("Submitting article with data:", editorValue);
+    if (editorValue) {
+      console.log("Flushing pending image uploads...");
+      await flushPendingImageUploads(editorValue);
+    }
+
     const formData = new FormData();
 
     formData.append("titre", data.titre || "");
@@ -60,28 +78,30 @@ function Actus_creation() {
 
   return (
     <div className="flex flex-col gap-4 h-full">
-      <div className="items-center justify-between flex gap-2 mt-auto flex-nowrap align-middle">
-        <div>
-          <h2 className="mb-4 text-2xl font-bold text-green-800">Actualités</h2>
-          <p className="text-gray-700">
-            Créez une nouvelle actualité pour informer les membres du club des
-          </p>
-        </div>
-        <div className="flex-nowrap gap-2 flex">
-          <Button
-            onClick={() => setIsDraft(false)}
-            type="submit"
-            disabled={loading}
-          >
-            Publier
-          </Button>
-          <Button onClick={() => setIsDraft(true)} disabled={loading}>
-            Enregistrer le brouillon
-          </Button>
-          <Button onClick={() => navigate("/gestion/actus")}>Retour</Button>
-        </div>
-      </div>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <div className="items-center justify-between flex gap-2 mt-auto flex-nowrap align-middle">
+          <div>
+            <h2 className="mb-4 text-2xl font-bold text-green-800">
+              Actualités
+            </h2>
+            <p className="text-gray-700">
+              Créez une nouvelle actualité pour informer les membres du club des
+            </p>
+          </div>
+          <div className="flex-nowrap gap-2 flex">
+            <Button
+              onClick={() => setIsDraft(false)}
+              type="submit"
+              disabled={loading}
+            >
+              Publier
+            </Button>
+            <Button onClick={() => setIsDraft(true)} disabled={loading}>
+              Enregistrer le brouillon
+            </Button>
+            <Button onClick={() => navigate("/gestion/actus")}>Retour</Button>
+          </div>
+        </div>
         <div className="flex flex-col gap-4">
           <Input
             {...register("titre")}
@@ -110,7 +130,15 @@ function Actus_creation() {
             name="type"
           />
         </div>
-        <Input {...register("img")} type="file" />
+        {localPreview && (
+          <img
+            src={localPreview}
+            alt="Aperçu"
+            className="h-40 w-auto rounded border"
+          />
+        )}
+
+        <Input {...register("img")} type="file" onChange={handleFileChange} />
         <div className="">
           <SimpleEditor onEditorReady={setEditorValue} />
         </div>
