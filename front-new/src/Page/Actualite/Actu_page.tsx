@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import Footer from "@/composant/Footer";
 import Navbar from "@/composant/Navbar";
 import { useNavigate, useParams } from "react-router";
-
+import { useAllArticles } from "@/hooks/useArticle";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Megaphone } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Pagination,
@@ -17,33 +19,28 @@ import { Search } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Toggle } from "@/components/ui/toggle";
 
+const URL_BACK = import.meta.env.URL_BACKEND;
+
 function Actu_page() {
   const navigate = useNavigate();
+  const { articles, loading, error } = useAllArticles();
   const { pagination } = useParams<{ pagination: string }>();
   const [isTousActive, setIsTousActive] = useState(true);
   const [filtre, setFiltre] = useState([""]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const allItems = Array.from({ length: 20 }, (_, i) => ({
-    id: i + 1,
-    type: "Actualité",
-    title: `Titre ${i + 1}`,
-    description:
-      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Animi amet libero accusamus, aliquam dolorum ex?",
-    date: "25 octobre 2025",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuATv7b8jdbCvHGkz1XdD4cTX3_n3-2tpyIsmaGa6CDCxfVqm-iTkbbmJuTLRU7G9Kayg8xqHINgiTMiz_oGcbD9tTRQCMOtCI-DvTtAj8sMugMihQxwdEh653mRmFq4ocJiuAsd_BoPJlMJ4P0dU-RlHdpBxKMFoT1i5_L_7MeEVndeZA9b-ZveAC6JwBf4P_GbbTE0HJvhn6RjDPL2H5hlgsWp2dkGs7nqLhO-OdTkMHB66vK6WEajmGVUA8c99ldoQp_OhKWFasg",
-  }));
+  console.log("Articles chargés:", articles);
+  console.log("API Base URL:", URL_BACK);
 
-  const totalPages = Math.ceil(allItems.length / itemsPerPage);
+  const publicationsList = articles || [];
+  const totalPages = Math.ceil(publicationsList.length / itemsPerPage);
 
   useEffect(() => {
     const pageFromUrl = pagination ? parseInt(pagination) : 1;
     if (pageFromUrl >= 1 && pageFromUrl <= totalPages) {
       setCurrentPage(pageFromUrl);
     } else {
-      // Si la page n'est pas valide, rediriger vers la page 1
       navigate("/news/1", { replace: true });
     }
   }, [pagination, navigate, totalPages]);
@@ -54,7 +51,7 @@ function Actu_page() {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentItems = allItems.slice(startIndex, endIndex);
+  const currentItems = articles.slice(startIndex, endIndex);
 
   useEffect(() => {
     if (filtre.length > 1) {
@@ -122,78 +119,128 @@ function Actu_page() {
           </div>
         </div>
         <section className="flex flex-wrap justify-center gap-12 p-4 mt-6">
-          {currentItems.map((item) => (
-            <div
-              key={item.id}
-              className="flex flex-col rounded-xl overflow-hidden shadow-sm bg-card-light dark:bg-card-dark border border-card-border-light dark:border-card-border-dark max-w-sm max-h-[600px] hover:shadow-md transition-shadow duration-300 ease-in-out cursor-pointer "
-            >
-              <img
-                src={item.image}
-                alt=""
-                className="w-full h-48 object-cover"
-              />
-              <p className="text-sm font-normal text-primary pl-4 mt-2">
-                {item.type}
-              </p>
-              <p className="text-lg font-bold tracking-[-0.015em] pl-4 mt-3 mb-3 line-clamp-1">
-                {item.title}
-              </p>
-              <p className="text-base font-normal opacity-80 pl-4 pr-4 line-clamp-4">
-                {item.description}
-              </p>
-              <div className="flex items-center justify-between gap-3 mt-4 pl-4 pr-4 pb-4">
-                <p className="text-sm font-normal opacity-60">
-                  publié le {item.date}
-                </p>
-                <button
-                  className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-text-light text-sm font-bold hover:bg-opacity-80 transition-colors"
-                  onClick={() => navigate(`/news/info/${item.id}`)}
-                >
-                  Lire la suite
-                </button>
+          {loading &&
+            Array.from({ length: itemsPerPage }).map((_, index) => (
+              <div key={index} className="w-md h-91.5 p-2 animate-pulse">
+                <Skeleton className="h-48 w-full mb-2" />
+                <Skeleton className="h-6 w-3/4 mb-2" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-5/6 mb-4" />
+                <div className="flex justify-between">
+                  <Skeleton className="h-3 w-2/6" />
+                  <Skeleton className="h-9 w-20 mt-2" />
+                </div>
               </div>
-            </div>
-          ))}
-        </section>
-        <Pagination className="mt-8">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
-                className={
-                  currentPage === 1
-                    ? "pointer-events-none opacity-50"
-                    : "cursor-pointer"
-                }
-              />
-            </PaginationItem>
-
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  onClick={() => handlePageChange(page)}
-                  isActive={currentPage === page}
-                  className="cursor-pointer"
-                >
-                  {page}
-                </PaginationLink>
-              </PaginationItem>
             ))}
 
-            <PaginationItem>
-              <PaginationNext
-                onClick={() =>
-                  handlePageChange(Math.min(currentPage + 1, totalPages))
-                }
-                className={
-                  currentPage === totalPages
-                    ? "pointer-events-none opacity-50"
-                    : "cursor-pointer"
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+          {!loading &&
+            currentItems.map((item) => (
+              <div
+                key={item.id_publication}
+                className=" w-md flex flex-col rounded-xl overflow-hidden shadow-sm bg-card-light dark:bg-card-dark border border-card-border-light dark:border-card-border-dark max-w-sm max-h-[600px] hover:shadow-md transition-shadow duration-300 ease-in-out "
+              >
+                <img
+                  src={`${import.meta.env.VITE_URL_UPLOAD}/${item.img}`}
+                  alt={item.titre}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="flex gap-2 mt-3 pl-4">
+                  {item.type === "annonce_importante" && (
+                    <Megaphone className="text-yellow-500" />
+                  )}
+                  <p
+                    className={`text-sm font-normal ${item.type === "annonce_importante" ? "text-yellow-500" : "text-primary"}`}
+                  >
+                    {item?.type === "actualite"
+                      ? "Actualité"
+                      : item?.type === "evenement"
+                        ? "Événement"
+                        : item?.type === "annonce"
+                          ? "Annonce"
+                          : item?.type === "annonce_importante"
+                            ? "Annonce importante"
+                            : ""}
+                  </p>
+                </div>
+                <p className="text-lg font-bold tracking-[-0.015em] pl-4 mt-3 mb-3 line-clamp-1">
+                  {item.titre}
+                </p>
+                <p className="text-base font-normal opacity-80 pl-4 pr-4 line-clamp-4">
+                  {item.description}
+                </p>
+                <div className="flex items-center justify-between gap-3 mt-4 pl-4 pr-4 pb-4">
+                  <p className="text-sm font-light opacity-60">
+                    publié le{" "}
+                    {new Date(item.publication_date).toLocaleDateString(
+                      "fr-FR",
+                      {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      },
+                    )}
+                  </p>
+                  <button
+                    className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-text-light text-sm font-bold hover:bg-opacity-80 transition-colors"
+                    onClick={() =>
+                      navigate(`/news/info/${item.id_publication}`)
+                    }
+                  >
+                    Lire la suite
+                  </button>
+                </div>
+              </div>
+            ))}
+        </section>
+        {currentItems.length === 0 && (
+          <p className="mt-8 text-center text-muted-foreground">
+            Aucune publication trouvée.
+          </p>
+        )}
+        {!loading && currentItems.length > 0 && (
+          <Pagination className="mt-8">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+                  className={
+                    currentPage === 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                />
+              </PaginationItem>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      onClick={() => handlePageChange(page)}
+                      isActive={currentPage === page}
+                      className="cursor-pointer"
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                ),
+              )}
+
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() =>
+                    handlePageChange(Math.min(currentPage + 1, totalPages))
+                  }
+                  className={
+                    currentPage === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </section>
       <Footer />
     </>

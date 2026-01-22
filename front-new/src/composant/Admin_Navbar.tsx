@@ -16,22 +16,22 @@ function AdminNavBar() {
         <div className="flex flex-col h-full">
           <Button
             onClick={() => navigate("/gestion/actus")}
-            color="tertiary"
-            className=" text-black/60 justify-start"
+            className=" justify-start"
+            variant="ghost"
           >
             Actualités
           </Button>
           <Button
             onClick={() => navigate("/gestion/utilisateur")}
-            color="tertiary"
             className="  justify-start"
+            variant="ghost"
           >
             Utilisateurs
           </Button>
           <Button
             onClick={() => navigate("/")}
-            color="tertiary"
             className="mt-auto justify-start"
+            variant="ghost"
           >
             Retourner sur le site
           </Button>

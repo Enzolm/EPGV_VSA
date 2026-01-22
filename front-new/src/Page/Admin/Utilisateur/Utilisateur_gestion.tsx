@@ -1,6 +1,8 @@
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
-
+import { useNavigate } from "react-router";
 import { useForm, Controller } from "react-hook-form";
+import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 
 type FormData = {
   nom: string;
@@ -12,7 +14,7 @@ type FormData = {
 };
 
 function UtilisateurGestion() {
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const navigate = useNavigate();
 
   const roles_list = [
     { label: "Président", id: "@president" },
@@ -24,10 +26,28 @@ function UtilisateurGestion() {
 
   return (
     <>
-      <div className="flex justify-between">
-        <h1>Gestion Utilisateur</h1>
-        lisateur
-      </div>
+      {/* <section id="info" className="flex">
+        <div className="flex align-center justify-between w-2/2 items-center">
+          <div>
+            <h2 className="mb-4 text-2xl font-bold text-green-800">
+              Utilisateurs
+            </h2>
+            <p className="text-gray-700">
+              Ajoutez, modifiez ou supprimez des Utilisateurs, chaque
+              utilisateur peut créer un article seul l'utilisateur
+              "Président(e)" peut suprimer des articles ainsi que des
+              utilisateurs.
+            </p>
+          </div>
+          <Button
+            className="align-center "
+            onClick={() => navigate("/gestion/utilisateur/creation")}
+          >
+            Créer une publication
+          </Button>
+        </div>
+      </section> */}
+      <SimpleEditor />
     </>
   );
 }
