@@ -17,6 +17,7 @@ import { useForm, Controller, type SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import type { Editor } from "@tiptap/react";
+import Actus_preview from "@/Page/Admin/Actualité/Actus_preview";
 
 function Actus_edition() {
   const location = useLocation();
@@ -24,6 +25,7 @@ function Actus_edition() {
   const [editorValue, setEditorValue] = useState<Editor | null>(null);
   const [isDraft, setIsDraft] = useState(false);
   const { id } = useParams<{ id: string }>();
+  const [openPreview, setOpenPreview] = useState(false);
 
   const { loading, updateArticle, error, success } = useUpdateArticle(id || "");
   const {
@@ -102,6 +104,11 @@ function Actus_edition() {
 
   return (
     <div className="flex flex-col gap-4 transition-all duration-300 ease-out overflow-hidden">
+      <Actus_preview
+        open={openPreview}
+        onClose={() => setOpenPreview(false)}
+        article={existingArticle!}
+      />
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div className="items-center justify-between flex gap-2 mt-auto flex-nowrap align-middle">
           <div>
@@ -122,6 +129,9 @@ function Actus_edition() {
               Modifier
             </Button>
             <Button onClick={() => navigate("/gestion/actus")}>Retour</Button>
+            <Button type="button" onClick={() => setOpenPreview(true)}>
+              Aperçu
+            </Button>
           </div>
         </div>
 

@@ -50,10 +50,6 @@ function ActusGesiton() {
     }
   }, [deleteSuccess]);
 
-  if (loading) {
-    return <div>Chargement des articles...</div>;
-  }
-
   const handledeleteArticle = () => {
     if (SelectedArticle) {
       deleteArticle();
