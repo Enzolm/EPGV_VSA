@@ -11,7 +11,7 @@ function Home() {
         <div className="@container">
           <div className="@[480px]:p-0">
             <div
-              className="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 rounded-xl items-center justify-center p-4 text-center"
+              className="flex min-h-120 flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 rounded-xl items-center justify-center p-4 text-center"
               data-alt="A group of people smiling during an outdoor gym session in a village setting"
               style={{
                 backgroundImage: `linear-gradient(rgba(16, 34, 22, 0.4) 0%, rgba(16, 34, 22, 0.7) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuD-98_UNq_dpKBgV6m80l3Mqwf9E5nMpvveIbJKE8ATLcDAKDQGJUwYdztbL639XraqxRcrRUy9foX1fvMkuwffBgmW_0WrL1SuK9RCVJc3ip4gvPSUUmXUpOkDADJ9VagzJ1MIdydvw2nEI47eV9CuoV-_rIQh0Rk6xz2mRTlJ6HtYd1SZ21HNYNDYk5qEgXjytgDbjJPjiY-n0naUcnrQ45XBp29UxYeZ0jFAVP7GBxTvOVy-eBTUnUod3Pu0fmpP82-GPvkvx4o")`,
@@ -43,7 +43,7 @@ function Home() {
             son propre rythme
           </p>
           <div className="flex flex-wrap md:flex-nowrap justify-center-safe lg:gap-32 gap-6 mt-14 w-full">
-            <div className="bg-gray-50 max-w-96 lg:max-w-128 md:max-w-102   border-1 border-black/10 shadow rounded-lg p-4 mt-6 flex flex-col gap-4">
+            <div className="bg-gray-50 w-96 lg:w-lg md:w-102   border border-black/10 shadow rounded-lg p-4 mt-6 flex flex-col gap-4">
               <Heart size={40} color="green" />
               <h2 className="text-2xl font-semibold">Bien-être</h2>
               <p className="text-green-900/90">
@@ -51,7 +51,7 @@ function Home() {
                 stress et favoriser une meilleure qualité de vie.
               </p>
             </div>
-            <div className="bg-gray-50 max-w-96 lg:max-w-128 md:max-w-102  border-1 border-black/10 shadow rounded-lg p-4 mt-6 flex flex-col gap-4">
+            <div className="bg-gray-50 w-96 lg:w-lg md:w-102  border border-black/10 shadow rounded-lg p-4 mt-6 flex flex-col gap-4">
               <PersonStanding size={40} color="green" />
               <h2 className="text-2xl font-semibold">Convivialité</h2>
               <p className="text-green-900/90">
@@ -59,7 +59,7 @@ function Home() {
                 s'amuser.{" "}
               </p>
             </div>
-            <div className="bg-gray-50 max-w-96 lg:max-w-128 md:max-w-102  border-1 border-black/10 shadow rounded-lg p-4 mt-6 flex flex-col gap-4">
+            <div className="bg-gray-50 w-96 lg:w-lg md:w-102  border border-black/10 shadow rounded-lg p-4 mt-6 flex flex-col gap-4">
               <HandFist size={40} color="green" />
               <h2 className="text-2xl font-semibold">Accessibilité</h2>
               <p className="text-green-900/90">

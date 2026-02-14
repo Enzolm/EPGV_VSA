@@ -73,7 +73,7 @@ function Navbar() {
         <button
           onClick={() => navigate("/news")}
           className={` flex border-t border-green-900/10 items-center justify-between pr-6 w-full text-left cursor-pointer pl-6 pb-4 pt-4 hover:bg-black/3 text-xl bw${
-            location.pathname === "/news"
+            location.pathname.startsWith("/news")
               ? "border-b-2 border-green-600/70 pb-0"
               : ""
           }`}
@@ -117,7 +117,7 @@ function Navbar() {
         <button
           onClick={() => navigate("/news")}
           className={`cursor-pointer hover:border-b-2 hover:border-green-900 pb-1 ${
-            location.pathname === "/news"
+            location.pathname.startsWith("/news")
               ? "border-b-2 border-green-900 pb-0"
               : ""
           }`}

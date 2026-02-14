@@ -19,19 +19,15 @@ import { Search } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Toggle } from "@/components/ui/toggle";
 
-const URL_BACK = import.meta.env.URL_BACKEND;
-
 function Actu_page() {
   const navigate = useNavigate();
   const { articles, loading, error } = useAllArticles();
   const { pagination } = useParams<{ pagination: string }>();
   const [isTousActive, setIsTousActive] = useState(true);
   const [filtre, setFiltre] = useState([""]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-
-  console.log("Articles chargés:", articles);
-  console.log("API Base URL:", URL_BACK);
 
   const publicationsList = articles || [];
   const totalPages = Math.ceil(publicationsList.length / itemsPerPage);
@@ -49,9 +45,29 @@ function Actu_page() {
     navigate(`/news/${page}`);
   };
 
+  const filteredArticles = publicationsList.filter((article) => {
+    const matchesType =
+      (filtre.includes("Actualites") && article.type === "actualite") ||
+      (filtre.includes("italic") && article.type === "evenement") ||
+      (filtre.includes("strikethrough") && article.type === "annonce") ||
+      (filtre.includes("strikethrough") &&
+        article.type === "annonce_importante") ||
+      isTousActive;
+    const matchesSearch =
+      article.titre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      article.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesType && matchesSearch;
+  });
+
+  function stripHtml(html: string): string {
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
+    return temp.textContent || temp.innerText || "";
+  }
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentItems = articles.slice(startIndex, endIndex);
+  const currentItems = filteredArticles.slice(startIndex, endIndex);
 
   useEffect(() => {
     if (filtre.length > 1) {
@@ -113,6 +129,8 @@ function Actu_page() {
             </div>
             <Input
               type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Rechercher un article"
               className="peer pl-9 w-[341.5px]"
             />
@@ -135,10 +153,10 @@ function Actu_page() {
             ))}
 
           {!loading &&
-            currentItems.map((item) => (
+            filteredArticles.map((item) => (
               <div
                 key={item.id_publication}
-                className=" w-md flex flex-col rounded-xl overflow-hidden shadow-sm bg-card-light dark:bg-card-dark border border-card-border-light dark:border-card-border-dark max-w-sm max-h-[600px] hover:shadow-md transition-shadow duration-300 ease-in-out "
+                className={`w-md flex flex-col rounded-xl overflow-hidden shadow-sm bg-card-light dark:bg-card-dark border border-card-border-light dark:border-card-border-dark max-w-sm max-h-150 hover:shadow-md transition-shadow duration-300 ease-in-out ${item.type === "annonce_importante" ? "border-yellow-500 border-2" : ""}`}
               >
                 <img
                   src={`${import.meta.env.VITE_URL_UPLOAD}/${item.img}`}
@@ -166,8 +184,8 @@ function Actu_page() {
                 <p className="text-lg font-bold tracking-[-0.015em] pl-4 mt-3 mb-3 line-clamp-1">
                   {item.titre}
                 </p>
-                <p className="text-base font-normal opacity-80 pl-4 pr-4 line-clamp-4">
-                  {item.description}
+                <p className="text-base font-normal opacity-80 pl-4 pr-4 line-clamp-4 h-24">
+                  {stripHtml(item.description)}
                 </p>
                 <div className="flex items-center justify-between gap-3 mt-4 pl-4 pr-4 pb-4">
                   <p className="text-sm font-light opacity-60">
@@ -182,7 +200,7 @@ function Actu_page() {
                     )}
                   </p>
                   <button
-                    className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-text-light text-sm font-bold hover:bg-opacity-80 transition-colors"
+                    className="flex min-w-21 max-w-120 cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-text-light text-sm font-bold hover:bg-opacity-80 transition-colors"
                     onClick={() =>
                       navigate(`/news/info/${item.id_publication}`)
                     }
@@ -193,12 +211,12 @@ function Actu_page() {
               </div>
             ))}
         </section>
-        {currentItems.length === 0 && (
+        {filteredArticles.length === 0 && (
           <p className="mt-8 text-center text-muted-foreground">
             Aucune publication trouvée.
           </p>
         )}
-        {!loading && currentItems.length > 0 && (
+        {!loading && filteredArticles.length > 0 && (
           <Pagination className="mt-8">
             <PaginationContent>
               <PaginationItem>
