@@ -56,6 +56,12 @@ function ActusGesiton() {
     }
   };
 
+  function stripHtml(html: string): string {
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
+    return temp.textContent || temp.innerText || "";
+  }
+
   console.log("Articles administrateur chargés:", articles);
 
   return (
@@ -90,7 +96,7 @@ function ActusGesiton() {
         }`}
       >
         <section id="info" className="flex">
-          <div className="flex align-center justify-between w-2/2 items-center">
+          <div className="flex align-center justify-between w-2/2 items-center h-24">
             <div>
               <h2 className="mb-4 text-2xl font-bold text-green-800">
                 Actualités
@@ -245,7 +251,9 @@ function ActusGesiton() {
                       )}
                     </Badge>
                   )}
-                  <p className="line-clamp-3 h-18">description</p>
+                  <p className="line-clamp-3 h-18">
+                    {stripHtml(article.description)}
+                  </p>
                   <div className="flex gap-4 flex-col mt-2">
                     <hr className=" " />
                     <div className="flex gap-2 mb-4">

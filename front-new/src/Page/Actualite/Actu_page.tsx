@@ -6,6 +6,7 @@ import { useAllArticles } from "@/hooks/useArticle";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Megaphone } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Pagination,
   PaginationContent,
@@ -199,21 +200,23 @@ function Actu_page() {
                       },
                     )}
                   </p>
-                  <button
-                    className="flex min-w-21 max-w-120 cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-text-light text-sm font-bold hover:bg-opacity-80 transition-colors"
+                  <Button
+                    // variant="ghost"
+                    // className="flex min-w-21 max-w-120 cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 text-text-light text-sm font-bold"
                     onClick={() =>
                       navigate(`/news/info/${item.id_publication}`)
                     }
                   >
                     Lire la suite
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
         </section>
         {filteredArticles.length === 0 && (
           <p className="mt-8 text-center text-muted-foreground">
-            Aucune publication trouvée.
+            Aucune publication trouvée. (Essayez d'ajuster vos filtres ou votre
+            recherche.)
           </p>
         )}
         {!loading && filteredArticles.length > 0 && (

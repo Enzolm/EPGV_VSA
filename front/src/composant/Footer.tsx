@@ -73,11 +73,8 @@ function Footer() {
             </h3>
             <ul className="mt-4 space-y-2 text-sm">
               <li className="flex items-center gap-2 ">
-                <MapPin
-                  size={30}
-                  className="text-green-700/70 bg-transparent"
-                />
-                6 Rue de Noncerve, 91580 Villeneuve-sur-Auvers
+                <MapPin width="25px" className="text-green-700/70" />6 Rue de
+                Noncerve, 91580 Villeneuve-sur-Auvers
               </li>
               <li
                 className="flex items-center gap-2 cursor-pointer"
@@ -86,7 +83,7 @@ function Footer() {
                     "mailto:contact@gym-volontaire-vsa.fr")
                 }
               >
-                <Mail size={25} className="text-green-700/70 bg-transparent" />
+                <Mail size={35} className="text-green-700/70 bg-transparent" />
                 contact@gym-volontaire-vsa.fr
               </li>
               <li

@@ -48,7 +48,7 @@ function Actu_info() {
           {article?.titre}
         </h1>
 
-        <div className="mt-8">
+        <div className="mb-8">
           {loading ? (
             <Skeleton className="w-full h-64 mb-8 rounded-lg aspect-video" />
           ) : (
@@ -66,7 +66,7 @@ function Actu_info() {
           <img
             src={`${import.meta.env.VITE_URL_UPLOAD}/${article?.img}`}
             alt={article?.titre}
-            className="w-full h-64 object-cover rounded-lg mb-8 aspect-video"
+            className="mt-8 w-full h-64 object-cover rounded-lg mb-8 aspect-video"
           />
         </div>
         <article className="prose prose-lg dark:prose-invert max-w-none text-text-light dark:text-text-dark prose-p:opacity-80 prose-headings:font-bold prose-headings:tracking-[-0.015em] prose-a:text-primary hover:prose-a:underline">

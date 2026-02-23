@@ -74,8 +74,8 @@ function Footer() {
             <ul className="mt-4 space-y-2 text-sm">
               <li className="flex items-center gap-2 ">
                 <MapPin
-                  size={30}
-                  className="text-green-700/70 bg-transparent"
+                  size={27}
+                  className="text-green-700/70 bg-transparent "
                 />
                 6 Rue de Noncerve, 91580 Villeneuve-sur-Auvers
               </li>

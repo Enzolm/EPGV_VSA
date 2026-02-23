@@ -1,6 +1,7 @@
 import Footer from "@/composant/Footer";
 import Navbar from "@/composant/Navbar";
 import { Heart, PersonStanding, HandFist } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import m_b from "@/assets/M_B.jpg";
 
 function Home() {
@@ -27,9 +28,9 @@ function Home() {
                   Villeneuve Sur Auvers (91).
                 </h2>
               </div>
-              <button className="mt-6 bg-white text-black rounded-lg p-2 cursor-pointer hover:bg-white/80">
+              <Button className="mt-6 bg-white hover:bg-white/80 text-black ">
                 Nous contacter
-              </button>
+              </Button>
             </div>
           </div>
         </div>

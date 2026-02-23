@@ -26,7 +26,7 @@ function UtilisateurGestion() {
 
   return (
     <>
-      {/* <section id="info" className="flex">
+      <section id="info" className="flex">
         <div className="flex align-center justify-between w-2/2 items-center">
           <div>
             <h2 className="mb-4 text-2xl font-bold text-green-800">
@@ -43,11 +43,10 @@ function UtilisateurGestion() {
             className="align-center "
             onClick={() => navigate("/gestion/utilisateur/creation")}
           >
-            Créer une publication
+            Ajouter un utilisateur
           </Button>
         </div>
-      </section> */}
-      <SimpleEditor />
+      </section>
     </>
   );
 }
