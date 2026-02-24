@@ -5,6 +5,7 @@ import ActusGesiton from "@/Page/Admin/Actualité/Actus_gestion";
 import { useEffect, useState } from "react";
 import Actus_creation from "./Actualité/Actus_creation";
 import Actus_edition from "./Actualité/Actus_Edition";
+import Utilisateur_creation from "./Utilisateur/Utilisateur_creation";
 
 const Panel = () => {
   const location = useLocation();
@@ -28,6 +29,9 @@ const Panel = () => {
 
             {location.pathname === "/gestion/utilisateur" && (
               <UtilisateurGestion />
+            )}
+            {location.pathname === "/gestion/utilisateur/creation" && (
+              <Utilisateur_creation />
             )}
           </div>
         </section>

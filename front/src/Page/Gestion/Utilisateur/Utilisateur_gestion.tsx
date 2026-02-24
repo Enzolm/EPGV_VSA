@@ -1,6 +1,13 @@
-import { useState } from "react";
-
-import { useForm, Controller } from "react-hook-form";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 type FormData = {
   nom: string;
@@ -12,21 +19,29 @@ type FormData = {
 };
 
 function UtilisateurGestion() {
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
-
-  const roles_list = [
-    { label: "Président", id: "@president" },
-    { label: "Présidente", id: "@presidente" },
-    { label: "Trésorier", id: "@tresorier" },
-    { label: "Trésorière", id: "@tresoriere" },
-    { label: "Secrétaire", id: "@secretaire" },
-  ];
-
   return (
     <>
       <div className="flex justify-between">
-        <h1>Gestion Utilisateur</h1>
-        lisateur
+        <h1>Liste des utilisateurs</h1>
+        <Table>
+          <TableCaption>A list of your recent invoices.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">Invoice</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Method</TableHead>
+              <TableHead className="text-right">Amount</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell className="font-medium">INV001</TableCell>
+              <TableCell>Paid</TableCell>
+              <TableCell>Credit Card</TableCell>
+              <TableCell className="text-right">$250.00</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     </>
   );
