@@ -82,9 +82,8 @@ const useGetAllUtilisateurs = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchUtilisateurs = async () => {
-      try {
+  const fetchUtilisateurs = async () => {
+    try {
         setLoading(true);
         const response = await api.get(`/users/get/all`);
         setUtilisateurs(response.data.users);
@@ -94,11 +93,13 @@ const useGetAllUtilisateurs = () => {
         setLoading(false);
       }
     };
-
+    useEffect(() => {
+    
     fetchUtilisateurs();
   }, []);
 
-  return { utilisateurs, loading, error };
+
+  return { utilisateurs, loading, error, refresh: fetchUtilisateurs };
 };
 
 const useCheckTokenCreationValidity = () => {
@@ -145,10 +146,67 @@ const useActiveAccount = () => {
   return { createPassword, loading, error };
 }
 
+const useLockAccount = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  const lockAccount = async (id: string) => {
+    try {
+      setLoading(true);
+      await api.get(`/users/account/lock/${id}`);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de la désactivation du compte."  );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { lockAccount, loading, error };
+}
+
+const useUnlockAccount = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  const unlockAccount = async (id: string) => {
+    try {
+      setLoading(true);
+      await api.get(`/users/account/unlock/${id}`);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de la réactivation du compte."  );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { unlockAccount, loading, error };
+}
+
+const useDeleteAccount = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  const deleteAccount = async (id: string) => {
+    try {
+      setLoading(true);
+      await api.delete(`/users/account/delete/${id}`);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de la suppression du compte."  );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { deleteAccount, loading, error };
+}
+
 export {
   useUtilisateurs,
   useCreateUtilisateur,
   useGetAllUtilisateurs,
   useCheckTokenCreationValidity,
   useActiveAccount,
+  useLockAccount,
+  useUnlockAccount,
+  useDeleteAccount,
 };

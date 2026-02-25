@@ -110,7 +110,7 @@ function Actus_edition() {
         article={existingArticle!}
       />
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <div className="items-center justify-between flex gap-2 mt-auto flex-nowrap align-middle">
+        <div className="items-start justify-between flex gap-2 mt-auto lg:flex-nowrap flex-col align-middle">
           <div>
             <h2 className="mb-4 text-2xl font-bold text-green-800">
               Actualités
@@ -167,15 +167,19 @@ function Actus_edition() {
             <img
               src={localPreview || imageUrl || undefined}
               alt="Aperçu"
-              className="h-40 w-auto rounded border"
+              className="h-48 w-md rounded border object-cover "
             />
           )}
 
           <div className="flex gap-2">
+            <p className="text-sm text-gray-600 self-center">
+              Taille d'image de miniature recommandé: 448px x 192px
+            </p>
             {(localPreview || imageUrl) && !removeImage && (
               <Button
                 type="button"
                 variant="secondary"
+                className="text-red-500"
                 onClick={handleRemoveImage}
               >
                 Supprimer l'image
@@ -183,7 +187,13 @@ function Actus_edition() {
             )}
           </div>
 
-          <Input {...register("img")} type="file" onChange={handleFileChange} />
+          <Input
+            {...register("img")}
+            type="file"
+            placeholder="Taille d'image recommandé: 448px x 192px
+"
+            onChange={handleFileChange}
+          />
         </div>
 
         <div className="">

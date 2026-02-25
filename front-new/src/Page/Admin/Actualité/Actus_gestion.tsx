@@ -96,7 +96,7 @@ function ActusGesiton() {
         }`}
       >
         <section id="info" className="flex">
-          <div className="flex align-center justify-between w-2/2 items-center h-24">
+          <div className="flex lg:flex-row flex-col align-center justify-between w-2/2 lg:items-center items-end">
             <div>
               <h2 className="mb-4 text-2xl font-bold text-green-800">
                 Actualités
@@ -206,7 +206,7 @@ function ActusGesiton() {
                   alt={article.titre}
                 />
                 <div className="p-4">
-                  <div className="flex gap-2 mt-3 pl-4">
+                  <div className="flex gap-2 mt-3">
                     {article.type === "annonce_importante" && (
                       <Megaphone className="text-yellow-500" />
                     )}
@@ -225,7 +225,7 @@ function ActusGesiton() {
                               : ""}
                     </p>
                   </div>
-                  <h3>{article.titre}</h3>
+                  <h3 className="font-bold">{article.titre}</h3>
                   {article.statut === "brouillon" ? (
                     <Badge className="bg-yellow-100 text-yellow-800">
                       Brouillon créer le{" "}
@@ -239,7 +239,7 @@ function ActusGesiton() {
                       )}
                     </Badge>
                   ) : (
-                    <Badge className="bg-green-100 text-green-800">
+                    <Badge className="bg-green-100 text-green-800 font-light italic">
                       Publié le{" "}
                       {new Date(article.publication_date).toLocaleDateString(
                         "fr-FR",

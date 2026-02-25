@@ -9,6 +9,9 @@ router.post("/create/admin", UserController.create_user_admin);
 router.get("/token/creation/check/:token", UserController.tokenValideChecker);
 router.post("/activate/account", UserController.activateAccount);
 router.get("/get/all", UserController.getAllUsers);
+router.get("/account/lock/:id", UserController.lockAccount);
+router.get("/account/unlock/:id", UserController.unlockAccount);
+router.delete("/account/delete/:id", UserController.deleteAccount);
 
 router.get("/test-mail", async (req, res) => {
   try {

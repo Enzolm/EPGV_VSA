@@ -189,7 +189,7 @@ function Actu_page() {
                   {stripHtml(item.description)}
                 </p>
                 <div className="flex items-center justify-between gap-3 mt-4 pl-4 pr-4 pb-4">
-                  <p className="text-sm font-light opacity-60">
+                  <p className="text-sm font-light opacity-60 italic">
                     publié le{" "}
                     {new Date(item.publication_date).toLocaleDateString(
                       "fr-FR",

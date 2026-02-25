@@ -11,6 +11,7 @@ import Panel from "@/Page/Admin/Panel";
 import Login from "@/Page/Admin/Login";
 import Create_MDP from "@/Page/Admin/Create_MDP";
 import Actu_info from "./Page/Actualite/Actu_info";
+import AuthProvider from "@/lib/ProtectedRoute";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -22,9 +23,17 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/news/:pagination" element={<Actu_page />} />
         <Route path="/news/info/:id" element={<Actu_info />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/gestion/*" element={<Panel />} />
-        {/* <Route path="/gestion/actus/creation" element={<Panel />} /> */}
+        <Route
+          path="/gestion/*"
+          element={
+            <AuthProvider AdminRoute={false}>
+              <Panel />
+            </AuthProvider>
+          }
+        />
+        {/* <Route path="/gestion/actus/creation" element={<AuthProvider><Panel /></AuthProvider>} /> */}
         <Route path="/gestion/actus/edition/:id" element={<Panel />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/create_mdp/:token" element={<Create_MDP />} />
       </Routes>

@@ -3,6 +3,6 @@ const router = experss.Router();
 const AuthController = require("../controllers/auth_controller");
 
 router.post("/login", AuthController.login);
-router.get("/verify-token", AuthController.verify_token);
+router.get("/verify-token", AuthController.loggerTokenGetAccess);
 
 module.exports = router;

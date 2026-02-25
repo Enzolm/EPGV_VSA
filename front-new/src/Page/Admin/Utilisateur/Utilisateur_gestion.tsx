@@ -9,18 +9,63 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetAllUtilisateurs } from "@/hooks/useUtilisateur";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  useGetAllUtilisateurs,
+  useLockAccount,
+  useUnlockAccount,
+  useDeleteAccount,
+} from "@/hooks/useUtilisateur";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { BadgeCheck, Hourglass, Ban, ShieldUser, Search } from "lucide-react";
+import {
+  BadgeCheck,
+  Hourglass,
+  Ban,
+  ShieldUser,
+  Search,
+  SquarePen,
+  UserRoundPenIcon,
+  UserLock,
+  Trash2,
+  UserCheck,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Field } from "@/components/ui/field";
 import { FieldLabel } from "@/components/ui/field";
 import { ButtonGroup } from "@/components/ui/button-group";
+import { Spinner } from "@/components/ui/spinner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 function UtilisateurGestion() {
   const navigate = useNavigate();
-  const { utilisateurs, loading, error } = useGetAllUtilisateurs();
+  const { utilisateurs, loading, error, refresh } = useGetAllUtilisateurs();
+  const {
+    lockAccount,
+    loading: lockLoading,
+    error: lockError,
+  } = useLockAccount();
+  const {
+    unlockAccount,
+    loading: unlockLoading,
+    error: unlockError,
+  } = useUnlockAccount();
+  const {
+    deleteAccount,
+    loading: deleteLoading,
+    error: deleteError,
+  } = useDeleteAccount();
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -34,10 +79,44 @@ function UtilisateurGestion() {
       utilisateur.email.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
+  const handleLock = (id: string) => {
+    lockAccount(id);
+  };
+
+  useEffect(() => {
+    if (lockError) {
+      console.error("Erreur lors du verrouillage du compte:", lockError);
+    }
+    if (unlockError) {
+      console.error("Erreur lors du déverrouillage du compte:", unlockError);
+    }
+    if (deleteError) {
+      console.error("Erreur lors de la suppression du compte:", deleteError);
+    }
+    if (!lockLoading && !unlockLoading && !deleteLoading) {
+      refresh();
+    }
+  }, [
+    lockError,
+    unlockError,
+    lockLoading,
+    unlockLoading,
+    deleteError,
+    deleteLoading,
+  ]);
+
+  const handleUnlock = (id: string) => {
+    unlockAccount(id);
+  };
+
+  const handleDelete = (id: string) => {
+    deleteAccount(id);
+  };
+
   return (
     <>
       <section id="info" className="flex flex-col gap-4">
-        <div className="flex align-center justify-between w-2/2 items-center">
+        <div className="flex lg:flex-row flex-col align-center justify-between w-2/2 lg:items-center items-end">
           <div>
             <h2 className="mb-4 text-2xl font-bold text-green-800">
               Utilisateurs
@@ -50,7 +129,7 @@ function UtilisateurGestion() {
             </p>
           </div>
           <Button
-            className="align-center "
+            className="align-center"
             onClick={() => navigate("/gestion/utilisateur/creation")}
           >
             Ajouter un utilisateur
@@ -83,7 +162,7 @@ function UtilisateurGestion() {
             </TableCaption>
             <TableCaption className="mt-4">
               <span className="text-sm text-gray-500">
-                * Seul l'utilisateur "Président(e)" peut supprimer des
+                * Seul les administrateurs peuvent créer ET supprimer des
                 utilisateurs.
               </span>
             </TableCaption>
@@ -95,7 +174,7 @@ function UtilisateurGestion() {
                 <TableHead className="w-32">Email</TableHead>
                 <TableHead className="w-32">Rôle</TableHead>
                 <TableHead className="w-32">Administrateur</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead className="text-right"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -147,7 +226,80 @@ function UtilisateurGestion() {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button variant="outline">Modifier</Button>
+                    <Popover>
+                      <PopoverTrigger>
+                        <Button variant="outline" className="ml-2">
+                          <SquarePen className="w-4 h-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent align="end" className="w-32 p-0 gap-0">
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start"
+                        >
+                          <UserRoundPenIcon className="w-4 h-4 mr-2" />
+                          Modifier
+                        </Button>
+                        {utilisateur.status !== "desactivated" ? (
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start"
+                            onClick={() => handleLock(utilisateur.id)}
+                          >
+                            {lockLoading ? (
+                              <Spinner className="w-4 h-4 mr-2" />
+                            ) : (
+                              <UserLock className="w-4 h-4 mr-2" />
+                            )}
+                            Désactiver
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start"
+                            onClick={() => handleUnlock(utilisateur.id)}
+                          >
+                            {unlockLoading ? (
+                              <Spinner className="w-4 h-4 mr-2" />
+                            ) : (
+                              <UserCheck className="w-4 h-4 mr-2" />
+                            )}
+                            Activer
+                          </Button>
+                        )}
+                        <Dialog>
+                          <DialogTrigger className="w-full">
+                            <Button
+                              variant="ghost"
+                              className="w-full justify-start text-red-500 hover:text-red-500"
+                            >
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              Supprimer
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>
+                                Confirmer la suppression
+                              </DialogTitle>
+                              <DialogDescription>
+                                Êtes-vous sûr de vouloir supprimer cet
+                                utilisateur ? Cette action est irréversible.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <Button
+                              variant="destructive"
+                              className="mt-4"
+                              onClick={() => {
+                                handleDelete(utilisateur.id);
+                              }}
+                            >
+                              Supprimer définitivement
+                            </Button>
+                          </DialogContent>
+                        </Dialog>
+                      </PopoverContent>
+                    </Popover>
                   </TableCell>
                 </TableRow>
               ))}

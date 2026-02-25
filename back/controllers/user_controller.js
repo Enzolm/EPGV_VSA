@@ -146,9 +146,54 @@ const activateAccount = async (req, res) => {
   }
 };
 
+const lockAccount = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const [result] = await db.execute(
+      `UPDATE users SET status = 'desactivated' WHERE id = ?`,
+      [id],
+    );
+
+    res.json({ success: true, message: "Compte désactivé avec succès" });
+  } catch (err) {
+    console.error("Erreur lors de la désactivation du compte:", err);
+    res.status(500).json({ success: false, message: "Erreur serveur" });
+  }
+};
+
+const unlockAccount = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const [result] = await db.execute(
+      `UPDATE users SET status = 'active' WHERE id = ?`,
+      [id],
+    );
+
+    res.json({ success: true, message: "Compte réactivé avec succès" });
+  } catch (err) {
+    console.error("Erreur lors de la réactivation du compte:", err);
+    res.status(500).json({ success: false, message: "Erreur serveur" });
+  }
+};
+
+const deleteAccount = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const [result] = await db.execute(`DELETE FROM users WHERE id = ?`, [id]);
+
+    res.json({ success: true, message: "Compte supprimé avec succès" });
+  } catch (err) {
+    console.error("Erreur lors de la suppression du compte:", err);
+    res.status(500).json({ success: false, message: "Erreur serveur" });
+  }
+};
+
 module.exports = {
   getAllUsers,
   create_user_admin,
   tokenValideChecker,
   activateAccount,
+  lockAccount,
+  unlockAccount,
+  deleteAccount,
 };

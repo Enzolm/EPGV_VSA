@@ -79,7 +79,7 @@ function Actus_creation() {
   return (
     <div className="flex flex-col gap-4 h-full">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <div className="items-center justify-between flex gap-2 mt-auto flex-nowrap align-middle">
+        <div className="items-start justify-between flex gap-2 mt-auto lg:flex-nowrap lg:flex-row flex-col align-middle">
           <div>
             <h2 className="mb-4 text-2xl font-bold text-green-800">
               Actualités
@@ -88,7 +88,7 @@ function Actus_creation() {
               Créez une nouvelle actualité pour informer les membres du club des
             </p>
           </div>
-          <div className="flex-nowrap gap-2 flex">
+          <div className="flex-nowrap gap-2 flex ">
             <Button
               onClick={() => setIsDraft(false)}
               type="submit"

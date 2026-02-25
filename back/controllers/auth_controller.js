@@ -1,12 +1,17 @@
+require("dotenv").config();
 const db = require("../config/db_config");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = process.env.JWT_SECRET;
 
 const login = (req, res) => {
   try {
-    const { email, mot_de_passe } = req.body;
-    if (!email || !mot_de_passe) {
+    console.log(
+      "Requête de connexion reçue avec les données:",
+      req.body,
+      process.env.JWT_KEY,
+    );
+    const { email, password } = req.body;
+    if (!email || !password) {
       return res
         .status(400)
         .json({ success: false, message: "Email et mot de passe requis" });
@@ -21,12 +26,24 @@ const login = (req, res) => {
           });
         }
 
+        if (rows[0].status === "desactivated") {
+          return res.status(403).json({
+            success: false,
+            message: "Compte désactivé, veuillez contacter un administrateur",
+          });
+        }
+
+        if (rows[0].status === "waiting_password") {
+          return res.status(403).json({
+            success: false,
+            message:
+              "Compte en attente d'activation, veuillez vérifier votre email",
+          });
+        }
+
         const user = rows[0];
-        const mot_de_passeMatch = await bcrypt.compare(
-          mot_de_passe,
-          user.mot_de_passe
-        );
-        if (!mot_de_passeMatch) {
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) {
           return res.status(401).json({
             success: false,
             message: "Email ou mot de passe incorrect",
@@ -36,13 +53,11 @@ const login = (req, res) => {
           {
             id: user.id,
             email: user.email,
-            admin: user.administration,
-            role: user.role,
           },
-          JWT_SECRET,
+          process.env.JWT_KEY,
           {
             expiresIn: "24h",
-          }
+          },
         );
         res.json({ success: true, token });
       })
@@ -56,25 +71,41 @@ const login = (req, res) => {
   }
 };
 
-const verify_token = (req, res, next) => {
-  const token = req.headers["authorization"];
+const loggerTokenGetAccess = (req, res) => {
+  const token = req.headers["authorization"]?.split(" ")[1];
   if (!token) {
     return res
       .status(401)
       .json({ success: false, message: "Token d'authentification requis" });
   }
-  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+  jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
     if (err) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Token d'authentification invalide" });
+      return res.status(401).json({
+        success: false,
+        message: "Token d'authentification invalide ",
+        token,
+      });
     }
-    req.user = decoded;
-    next();
+    query =
+      "SELECT id, email, nom, prenom, role, status, isAdmin FROM users WHERE id = ?";
+    db.execute(query, [decoded.id])
+      .then(([rows]) => {
+        if (rows.length === 0) {
+          return res.status(401).json({
+            success: false,
+            message: "Utilisateur non trouvé",
+          });
+        }
+        res.json({ success: true, user: rows[0] });
+      })
+      .catch((err) => {
+        console.error("Erreur lors de la vérification du token:", err);
+        res.status(500).json({ success: false, message: "Erreur serveur" });
+      });
   });
 };
 
 module.exports = {
   login,
-  verify_token,
+  loggerTokenGetAccess,
 };
