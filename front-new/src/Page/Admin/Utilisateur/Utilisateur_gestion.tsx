@@ -19,6 +19,7 @@ import {
   useLockAccount,
   useUnlockAccount,
   useDeleteAccount,
+  useGetProfileImage,
 } from "@/hooks/useUtilisateur";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -51,6 +52,7 @@ import {
 function UtilisateurGestion() {
   const navigate = useNavigate();
   const { utilisateurs, loading, error, refresh } = useGetAllUtilisateurs();
+  const { fetchImageUrl, imageUrl } = useGetProfileImage();
   const {
     lockAccount,
     loading: lockLoading,
@@ -68,10 +70,6 @@ function UtilisateurGestion() {
   } = useDeleteAccount();
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    console.log("test", utilisateurs);
-  }, [utilisateurs]);
-
   const filteredUtilisateurs = utilisateurs.filter(
     (utilisateur) =>
       utilisateur.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -81,6 +79,10 @@ function UtilisateurGestion() {
 
   const handleLock = (id: string) => {
     lockAccount(id);
+  };
+
+  const profileImage = async (id: string) => {
+    await fetchImageUrl(id);
   };
 
   useEffect(() => {
@@ -169,6 +171,7 @@ function UtilisateurGestion() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-32">Status</TableHead>
+                <TableHead className="w-32"></TableHead>
                 <TableHead className="w-32">Nom</TableHead>
                 <TableHead className="w-32">Prenom</TableHead>
                 <TableHead className="w-32">Email</TableHead>
@@ -202,6 +205,14 @@ function UtilisateurGestion() {
                             : ""}
                     </Badge>
                   </TableCell>
+                  <TableCell>
+                    <img
+                      src={`${import.meta.env.VITE_URL_PROFILE_IMAGE}/user-${utilisateur.id}.webp`}
+                      alt="Photo de profil"
+                      className="bg-gray-200 w-8 h-8 rounded-full object-cover"
+                    />
+                  </TableCell>
+
                   <TableCell>{utilisateur.nom}</TableCell>
                   <TableCell>{utilisateur.prenom}</TableCell>
                   <TableCell>{utilisateur.email}</TableCell>

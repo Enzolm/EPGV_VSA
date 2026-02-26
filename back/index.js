@@ -61,6 +61,58 @@ const convertToWebP = async (req, res, next) => {
   }
 };
 
+const userUpload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|gif|webp/;
+    const mimetype = allowedTypes.test(file.mimetype);
+    const extname = allowedTypes.test(
+      path.extname(file.originalname).toLowerCase(),
+    );
+
+    if (mimetype && extname) {
+      return cb(null, true);
+    }
+    cb(
+      new Error("Seules les images sont acceptées (jpeg, jpg, png, gif, webp)"),
+    );
+  },
+  limits: { fileSize: 20 * 1024 * 1024 },
+});
+
+const userConvertToWebP = async (req, res, next) => {
+  console.log("userConvertToWebP middleware appelé", req.file, req.body);
+
+  if (!req.file && req.body.id) {
+    return next();
+  }
+
+  try {
+    const filename = `user-${req.body.id}.webp`;
+    const outputPath = path.join("uploads/users", filename);
+
+    await sharp(req.file.buffer)
+      .rotate() // Auto-rotation selon EXIF uniquement
+      .webp({
+        quality: 80,
+        effort: 6,
+      })
+      .toFile(outputPath);
+
+    req.file.filename = filename;
+    req.file.path = outputPath;
+    req.file.convertedToWebP = true;
+
+    next();
+  } catch (error) {
+    console.error("Erreur lors de la conversion en WebP:", error);
+    res.status(500).json({
+      success: false,
+      message: "Erreur lors du traitement de l'image",
+    });
+  }
+};
+
 dotenv.config();
 
 const app = express();
@@ -99,6 +151,25 @@ app.post("/api/upload", upload.single("img"), convertToWebP, (req, res) => {
     });
   }
 });
+
+app.post(
+  "/api/users/upload",
+  userUpload.single("img"),
+  userConvertToWebP,
+  (req, res) => {
+    if (req.file) {
+      res.json({
+        success: true,
+        filename: req.file.filename,
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "Aucun fichier téléchargé",
+      });
+    }
+  },
+);
 
 app.listen(3000, () => {
   console.log("✅ Serveur à l'écoute sur le port 3000");

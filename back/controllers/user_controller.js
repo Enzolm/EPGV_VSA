@@ -4,6 +4,9 @@ const crypto = require("crypto");
 const sendActivationEmail =
   require("../services/mail.service").sendActivationEmail;
 
+const path = require("path");
+const fs = require("fs");
+
 const getAllUsers = (req, res) => {
   const query =
     "SELECT id, email, nom, prenom, role, isAdmin, status, created_at, updated_at FROM users";
@@ -188,6 +191,57 @@ const deleteAccount = async (req, res) => {
   }
 };
 
+const userById = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const [rows] = await db.execute(
+      `SELECT id, email, nom, prenom, role, isAdmin, status, created_at, updated_at
+       FROM users
+       WHERE id = ?`,
+      [id],
+    );
+    if (rows.length) {
+      res.json(rows[0]);
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: "Utilisateur non trouvé" });
+    }
+  } catch (err) {
+    console.error(
+      "Erreur lors de la récupération de l'utilisateur par ID:",
+      err,
+    );
+    throw err;
+  }
+};
+
+const USER_UPLOADS_DIR = path.join(__dirname, "..", "uploads", "users");
+const DEFAULT_PROFILE_IMAGE_PATH = path.join(USER_UPLOADS_DIR, "user.svg");
+
+const getProfileImage = async (req, res) => {
+  // sécurise le nom de fichier
+  const filename = path.basename(req.params.filename || "");
+  const requestedFilePath = path.join(USER_UPLOADS_DIR, filename);
+
+  try {
+    // ✅ fs.promises.access (pas fs.access direct avec await)
+    await fs.promises.access(requestedFilePath, fs.constants.F_OK);
+    return res.sendFile(requestedFilePath);
+  } catch {
+    try {
+      await fs.promises.access(DEFAULT_PROFILE_IMAGE_PATH, fs.constants.F_OK);
+      return res.sendFile(DEFAULT_PROFILE_IMAGE_PATH);
+    } catch (defaultErr) {
+      console.error("Image par défaut introuvable:", defaultErr);
+      return res.status(404).json({
+        success: false,
+        message: "Image de profil et image par défaut non trouvées.",
+      });
+    }
+  }
+};
+
 module.exports = {
   getAllUsers,
   create_user_admin,
@@ -196,4 +250,6 @@ module.exports = {
   lockAccount,
   unlockAccount,
   deleteAccount,
+  userById,
+  getProfileImage,
 };

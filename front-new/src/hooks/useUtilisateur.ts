@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "@/lib/axios";
+import { set } from "react-hook-form";
 
 export interface Utilisateur {
   id: string;
@@ -28,6 +29,13 @@ type ActivateAccounteResponse = {
   success: boolean;
   message: string;
 }
+
+type EditProfileData = {
+  nom?: string;
+  prenom?: string;
+  email?: string;
+  profileImage?: File | null;
+};
 
 const useUtilisateurs = () => {
   const [utilisateur, setUtilisateur] = useState<Utilisateur | null>(null);
@@ -200,6 +208,78 @@ const useDeleteAccount = () => {
   return { deleteAccount, loading, error };
 }
 
+const useGetProfileImage = () => {
+  const [imageUrl, setImageUrl] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+    const fetchImageUrl = async (id: string) => {
+      try {
+        const img = await api.get(`/users/profile-image/user-${id}.webp`, {
+          responseType: "blob",
+        });
+        setImageUrl(URL.createObjectURL(img.data));
+      } catch (err) {
+        console.error("Erreur lors du chargement de l'image de profil :", err);
+        setError("Erreur lors du chargement de l'image de profil.");
+        setImageUrl(`${import.meta.env.VITE_URL_PROFILE_IMAGE}/user-default.webp`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+  return { fetchImageUrl, imageUrl, loading, error };
+}
+
+const useGetUtilisateurById = (id: string) => {
+  const [utilisateur, setUtilisateur] = useState<Utilisateur | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUtilisateur = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get(`/users/${id}`);
+        setUtilisateur(response.data);
+      } catch (err) {
+        setError("Erreur lors du chargement de l'utilisateur.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUtilisateur();
+  }, [id]);
+
+  return { utilisateur, loading, error };
+}
+
+const useEditMyProfile = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const editMyProfile = async (data: EditProfileData, id: string) => {
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      if (data.nom) formData.append("nom", data.nom);
+      if (data.prenom) formData.append("prenom", data.prenom);
+      if (data.email) formData.append("email", data.email);
+      if (data.profileImage) formData.append("profileImage", data.profileImage);
+      const response = await api.put(`/users/profile/${id}`, formData);
+      return response.data;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de la mise à jour du profil.");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { editMyProfile, loading, error };
+}
+
 export {
   useUtilisateurs,
   useCreateUtilisateur,
@@ -209,4 +289,7 @@ export {
   useLockAccount,
   useUnlockAccount,
   useDeleteAccount,
+    useGetUtilisateurById,
+  useGetProfileImage,
+  useEditMyProfile,
 };

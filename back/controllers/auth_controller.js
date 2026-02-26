@@ -5,11 +5,6 @@ const jwt = require("jsonwebtoken");
 
 const login = (req, res) => {
   try {
-    console.log(
-      "Requête de connexion reçue avec les données:",
-      req.body,
-      process.env.JWT_KEY,
-    );
     const { email, password } = req.body;
     if (!email || !password) {
       return res

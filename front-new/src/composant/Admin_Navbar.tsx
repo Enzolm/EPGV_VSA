@@ -1,7 +1,6 @@
 import logo_sf from "@/assets/logo_sf.png";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
-import img_profile from "@/assets/M_B.jpg";
 import { useUserStore } from "@/lib/store/userStore";
 import {
   Popover,
@@ -9,16 +8,34 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
   LogOut,
   UserRound,
   FilesIcon,
   Users2Icon,
   Undo2Icon,
 } from "lucide-react";
+import { useGetProfileImage } from "@/hooks/useUtilisateur";
+import { useEffect } from "react";
+import GestionProfile from "@/Page/Admin/GestionProfile";
 
 function AdminNavBar() {
   const navigate = useNavigate();
   const user = useUserStore((state) => state.user);
+  const { imageUrl, loading, error, fetchImageUrl } = useGetProfileImage();
+
+  useEffect(() => {
+    if (user) {
+      fetchImageUrl(user.id.toString());
+    }
+  }, [user?.id]);
+
   return (
     <>
       <nav className="flex flex-col h-full border overflow-hidden  lg:w-64 border-black/10 bg-white lg:p-2 p-0 gap-6 shadow-md over">
@@ -56,9 +73,9 @@ function AdminNavBar() {
             <PopoverTrigger className=" text-left">
               <div className="flex gap-1 hover:bg-[#FAFAFA] hover:cursor-pointer p-2 rounded-lg items-center">
                 <img
-                  className="w-9 lg:h-9 rounded-full"
-                  src={img_profile}
-                  alt=""
+                  className=" w-9 lg:h-9 rounded-full bg-gray-200 object-cover"
+                  src={imageUrl}
+                  alt="Photo de profil"
                 />
                 <div className="hidden lg:block">
                   <p className="text-sm font-medium">
@@ -69,14 +86,20 @@ function AdminNavBar() {
               </div>
             </PopoverTrigger>
             <PopoverContent className="w-42 m-0 gap-0 p-0">
-              <Button
-                onClick={() => navigate("/gestion/profile")}
-                variant="ghost"
-                className=" justify-start"
-              >
-                <UserRound className="mr-2" />
-                Mon profil
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" className=" justify-start">
+                    <UserRound className="mr-2" />
+                    Mon profil
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogTitle className="text-lg font-semibold mb-4">
+                    Modifier mon profil
+                  </DialogTitle>
+                  <GestionProfile id={user?.id || null} />
+                </DialogContent>
+              </Dialog>
               <Button
                 onClick={() => (
                   navigate("/"),

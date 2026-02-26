@@ -12,6 +12,8 @@ router.get("/get/all", UserController.getAllUsers);
 router.get("/account/lock/:id", UserController.lockAccount);
 router.get("/account/unlock/:id", UserController.unlockAccount);
 router.delete("/account/delete/:id", UserController.deleteAccount);
+router.get("/:id", UserController.userById);
+router.get("/profile-image/:filename", UserController.getProfileImage);
 
 router.get("/test-mail", async (req, res) => {
   try {

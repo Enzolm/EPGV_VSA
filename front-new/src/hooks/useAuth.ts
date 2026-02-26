@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import api from "@/lib/axios";
 import { useUserStore } from "@/lib/store/userStore";
+import { useLocation } from "react-router";
 
 type VerifyTokenResponse = {
   success: boolean;
@@ -21,6 +22,36 @@ const useAuth = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { setUser } = useUserStore();
+  const location = useLocation();
+  console.log("useAuth - location.pathname:", location.pathname);
+
+  useEffect(() => {
+    const verifyToken = async (token :string) => {
+        if (!token) {
+            setIsAuthenticated({ success: false, user: null });
+            setLoading(false);
+        }
+        try {
+            setLoading(true);
+            const response = await api.get("/auth/verify-token", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setIsAuthenticated(response.data);
+            if (response.data.success && response.data.user) {
+              setUser(response.data.user);
+            }
+        } catch (err) {
+            setError("Erreur lors de la vérification du token.");
+            setIsAuthenticated({ success: false, user: null });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    verifyToken(localStorage.getItem("token") || "");
+}, [location.pathname]);
 
     useEffect(() => {
         console.log("Vérification du token", localStorage.getItem("token"));
