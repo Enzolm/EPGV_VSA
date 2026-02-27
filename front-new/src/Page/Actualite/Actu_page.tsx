@@ -22,7 +22,7 @@ import { Toggle } from "@/components/ui/toggle";
 
 function Actu_page() {
   const navigate = useNavigate();
-  const { articles, loading, error } = useAllArticles();
+  const { articles, loading } = useAllArticles();
   const { pagination } = useParams<{ pagination: string }>();
   const [isTousActive, setIsTousActive] = useState(true);
   const [filtre, setFiltre] = useState([""]);
@@ -65,11 +65,6 @@ function Actu_page() {
     temp.innerHTML = html;
     return temp.textContent || temp.innerText || "";
   }
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentItems = filteredArticles.slice(startIndex, endIndex);
-
   useEffect(() => {
     if (filtre.length > 1) {
       setIsTousActive(false);

@@ -11,6 +11,8 @@ import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { useCreateUtilisateur } from "@/hooks/useUtilisateur";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
+import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 type FormData = {
   nom: string;
@@ -27,16 +29,26 @@ const Utilisateur_creation = () => {
       isAdmin: "false",
     },
   });
+  const navigate = useNavigate();
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
     console.log(data);
-    createUtilisateur({
+    const response = await createUtilisateur({
       nom: data.nom,
       prenom: data.prenom,
       email: data.email,
       role: data.role,
       isAdmin: data.isAdmin === "true" ? true : false,
     });
+    if (response.success) {
+      setValue("nom", "");
+      setValue("prenom", "");
+      setValue("email", "");
+      setValue("role", "");
+      setValue("isAdmin", "false");
+      navigate("/gestion/utilisateur");
+      toast.success(response.message);
+    }
   };
 
   return (

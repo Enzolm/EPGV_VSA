@@ -35,7 +35,6 @@ const create_user_admin = async (req, res) => {
     );
 
     const userId = result.insertId;
-
     const token = crypto.randomBytes(32).toString("hex");
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
@@ -242,6 +241,50 @@ const getProfileImage = async (req, res) => {
   }
 };
 
+const editProfile = async (req, res) => {
+  const userId = req.params.id;
+  const { nom, prenom, email } = req.body;
+
+  if (!nom || !prenom || !email) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Tous les champs sont requis" });
+  }
+
+  try {
+    await db.execute(
+      `UPDATE users SET nom = ?, prenom = ?, email = ? WHERE id = ?`,
+      [nom, prenom, email, userId],
+    );
+    res.json({ success: true, message: "Profil mis à jour avec succès" });
+  } catch (err) {
+    console.error("Erreur lors de la mise à jour du profil:", err);
+    res.status(500).json({ success: false, message: "Erreur serveur" });
+  }
+};
+
+const AdminEdit = async (req, res) => {
+  const userId = req.params.id;
+  const { nom, prenom, email, role, isAdmin } = req.body;
+
+  if (!nom || !prenom || !email || !role) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Tous les champs sont requis" });
+  }
+
+  try {
+    await db.execute(
+      `UPDATE users SET nom = ?, prenom = ?, email = ?, role = ?, isAdmin = ? WHERE id = ?`,
+      [nom, prenom, email, role, isAdmin, userId],
+    );
+    res.json({ success: true, message: "Profil mis à jour avec succès" });
+  } catch (err) {
+    console.error("Erreur lors de la mise à jour du profil:", err);
+    res.status(500).json({ success: false, message: "Erreur serveur" });
+  }
+};
+
 module.exports = {
   getAllUsers,
   create_user_admin,
@@ -252,4 +295,6 @@ module.exports = {
   deleteAccount,
   userById,
   getProfileImage,
+  editProfile,
+  AdminEdit,
 };

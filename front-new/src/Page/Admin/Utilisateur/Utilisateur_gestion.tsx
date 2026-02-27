@@ -19,7 +19,6 @@ import {
   useLockAccount,
   useUnlockAccount,
   useDeleteAccount,
-  useGetProfileImage,
 } from "@/hooks/useUtilisateur";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -48,11 +47,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import UtilisateurEdition from "./Utilisateur_Edition";
 
 function UtilisateurGestion() {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const { utilisateurs, loading, error, refresh } = useGetAllUtilisateurs();
-  const { fetchImageUrl, imageUrl } = useGetProfileImage();
   const {
     lockAccount,
     loading: lockLoading,
@@ -81,10 +81,6 @@ function UtilisateurGestion() {
     lockAccount(id);
   };
 
-  const profileImage = async (id: string) => {
-    await fetchImageUrl(id);
-  };
-
   useEffect(() => {
     if (lockError) {
       console.error("Erreur lors du verrouillage du compte:", lockError);
@@ -105,6 +101,7 @@ function UtilisateurGestion() {
     unlockLoading,
     deleteError,
     deleteLoading,
+    open,
   ]);
 
   const handleUnlock = (id: string) => {
@@ -172,8 +169,8 @@ function UtilisateurGestion() {
               <TableRow>
                 <TableHead className="w-32">Status</TableHead>
                 <TableHead className="w-32"></TableHead>
-                <TableHead className="w-32">Nom</TableHead>
                 <TableHead className="w-32">Prenom</TableHead>
+                <TableHead className="w-32">Nom</TableHead>
                 <TableHead className="w-32">Email</TableHead>
                 <TableHead className="w-32">Rôle</TableHead>
                 <TableHead className="w-32">Administrateur</TableHead>
@@ -213,8 +210,8 @@ function UtilisateurGestion() {
                     />
                   </TableCell>
 
-                  <TableCell>{utilisateur.nom}</TableCell>
                   <TableCell>{utilisateur.prenom}</TableCell>
+                  <TableCell>{utilisateur.nom}</TableCell>
                   <TableCell>{utilisateur.email}</TableCell>
                   <TableCell>
                     {utilisateur.role == "president"
@@ -244,13 +241,31 @@ function UtilisateurGestion() {
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent align="end" className="w-32 p-0 gap-0">
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start"
-                        >
-                          <UserRoundPenIcon className="w-4 h-4 mr-2" />
-                          Modifier
-                        </Button>
+                        <Dialog open={open} onOpenChange={setOpen}>
+                          <DialogTrigger className="w-full">
+                            <Button
+                              variant="ghost"
+                              className="w-full justify-start"
+                            >
+                              <UserRoundPenIcon className="w-4 h-4 mr-2" />
+                              Modifier
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>
+                                Modifier le profil de {utilisateur.prenom}{" "}
+                                {utilisateur.nom}
+                              </DialogTitle>
+                            </DialogHeader>
+                            <UtilisateurEdition
+                              id={utilisateur.id}
+                              onClose={() => {
+                                setOpen(false);
+                              }}
+                            />
+                          </DialogContent>
+                        </Dialog>
                         {utilisateur.status !== "desactivated" ? (
                           <Button
                             variant="ghost"

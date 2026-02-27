@@ -9,8 +9,16 @@ import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { Save } from "lucide-react";
+import { toast } from "sonner";
+import { useUserStore } from "@/lib/store/userStore";
 
-const GestionProfile = ({ id }: { id: number | null }) => {
+const GestionProfile = ({
+  id,
+  onClose,
+}: {
+  id: number | null;
+  onClose: () => void;
+}) => {
   const { imageUrl, loading, error, fetchImageUrl } = useGetProfileImage();
   const {
     utilisateur,
@@ -23,7 +31,9 @@ const GestionProfile = ({ id }: { id: number | null }) => {
     editMyProfile,
     loading: updateLoading,
     error: updateError,
+    success,
   } = useEditMyProfile();
+  const { setUser } = useUserStore();
 
   useEffect(() => {
     if (id !== null) {
@@ -44,11 +54,23 @@ const GestionProfile = ({ id }: { id: number | null }) => {
       setValue("prenom", utilisateur.prenom);
       setValue("email", utilisateur.email);
     }
+    console.log(
+      "Dépendances de useEffect ?????????????????????????????????????????????????????????????????????????????????:",
+      utilisateur,
+    );
   }, [utilisateur, loading, utilisateurLoading, setValue]);
 
-  const onSubmit = (data: any) => {
-    console.log("Données du formulaire :", data);
-    editMyProfile(data, id?.toString() || "");
+  const onSubmit = async (data: any) => {
+    const response = await editMyProfile(data, id?.toString() || "");
+    if (response.success) {
+      toast.success("Profil mis à jour avec succès !");
+      setUser({ ...utilisateur, ...data });
+      onClose();
+    } else {
+      toast.error(
+        "Erreur lors de la mise à jour du profil : " + response.message,
+      );
+    }
   };
 
   return (
@@ -61,13 +83,13 @@ const GestionProfile = ({ id }: { id: number | null }) => {
             <img
               src={previewUrl}
               alt="Photo de profil"
-              className="w-16 h-16 rounded-full bg-gray-200 object-cover"
+              className="w-16 h-16 rounded-full bg-gray-200 object-cover p-0 m-0"
             />
           ) : (
             <img
               src={imageUrl}
               alt="Photo de profil"
-              className="w-16 h-16 rounded-full bg-gray-200 object-cover"
+              className="w-16 h-16 rounded-full bg-gray-200 object-cover p-0 m-0"
             />
           )}
           <Plus className="absolute w-9 h-9 group-hover/item:text-white text-transparent transition-colors duration-200 rounded-full p-1" />
@@ -82,7 +104,7 @@ const GestionProfile = ({ id }: { id: number | null }) => {
                 name={name}
                 onBlur={onBlur}
                 accept="image/*"
-                className="absolute border-2 shadow-none w-16 h-16 opacity-0 rounded-full hover:cursor-pointer"
+                className="absolute border-2 shadow-none w-16 h-16 opacity-0 rounded-full hover:cursor-pointer p-0 m-0"
                 onChange={(e) => {
                   const file = e.target.files?.[0] ?? null;
                   onChange(file); // met le File dans react-hook-form
@@ -105,10 +127,13 @@ const GestionProfile = ({ id }: { id: number | null }) => {
             placeholder="Email"
           ></Input>
           <Button
+            disabled={updateLoading}
             type="submit"
             className="bg-green-900 text-white hover:bg-green-700 self-end"
           >
-            Enregistrer les modifications
+            {updateLoading
+              ? "Enregistrement en cours..."
+              : "Enregistrer les modifications"}
             <Save className="ml-2" />
           </Button>
         </div>

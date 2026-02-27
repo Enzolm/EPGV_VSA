@@ -37,6 +37,24 @@ type EditProfileData = {
   profileImage?: File | null;
 };
 
+type AdminEditProfileData = {
+  nom?: string;
+  prenom?: string;
+  email?: string;
+  role?: string;
+  isAdmin?: boolean;
+}
+
+export interface EditProfileResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface CreateUtilisateurResponse {
+  success: boolean;
+  message: string;
+}
+
 const useUtilisateurs = () => {
   const [utilisateur, setUtilisateur] = useState<Utilisateur | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -74,9 +92,11 @@ const useCreateUtilisateur = () => {
   }) => {
     try {
       setLoading(true);
-      await api.post("/users/create/admin", data);
+      const response = await api.post("/users/create/admin", data);
+      return response.data as CreateUtilisateurResponse;
     } catch (err: any) {
       setError(err.response?.data?.message || "Erreur lors de la création de l'utilisateur."  );
+      return { success: false, message: error || "Erreur lors de la création de l'utilisateur." } as CreateUtilisateurResponse;
     } finally {
       setLoading(false);
     }
@@ -258,6 +278,18 @@ const useGetUtilisateurById = (id: string) => {
 const useEditMyProfile = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [ success, setSuccess] = useState<EditProfileResponse | null>(null);
+
+  const uploadProfileImage = async (file: File, id: string) => {
+    const uploadData = new FormData();
+    uploadData.append("img", file); // clé attendue par /users/upload
+    uploadData.append("id", id);    // clé attendue par /users/upload
+    return api.post("/users/upload", uploadData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  };
 
   const editMyProfile = async (data: EditProfileData, id: string) => {
     try {
@@ -266,18 +298,51 @@ const useEditMyProfile = () => {
       if (data.nom) formData.append("nom", data.nom);
       if (data.prenom) formData.append("prenom", data.prenom);
       if (data.email) formData.append("email", data.email);
-      if (data.profileImage) formData.append("profileImage", data.profileImage);
-      const response = await api.put(`/users/profile/${id}`, formData);
-      return response.data;
+       const response = await api.put(`/users/edit-profile/${id}`, formData);
+             if (data.profileImage instanceof File) {
+        await uploadProfileImage(data.profileImage, id);
+      }
+      setSuccess(response.data);
+      return response.data as EditProfileResponse;
     } catch (err: any) {
       setError(err.response?.data?.message || "Erreur lors de la mise à jour du profil.");
+      return { success: false, message: err.response?.data?.message || "Erreur lors de la mise à jour du profil." } as EditProfileResponse;
       throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  return { editMyProfile, loading, error };
+  return { editMyProfile, loading, error, success };
+}
+
+const useAdminEditProfile = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [ success, setSuccess] = useState<EditProfileResponse | null>(null);
+
+  const editProfile = async (data: AdminEditProfileData, id: string) => {
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      if (data.nom) formData.append("nom", data.nom);
+      if (data.prenom) formData.append("prenom", data.prenom);
+      if (data.email) formData.append("email", data.email);
+      if (data.role) formData.append("role", data.role);
+      if (data.isAdmin !== undefined) formData.append("isAdmin", data.isAdmin.toString());
+
+      const response = await api.put(`/users/admin/edit-profile/${id}`, formData);
+      setSuccess(response.data);
+      return response.data as EditProfileResponse;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de la mise à jour du profil.");
+      return { success: false, message: err.response?.data?.message || "Erreur lors de la mise à jour du profil." } as EditProfileResponse;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { editProfile, loading, error, success };
 }
 
 export {
@@ -292,4 +357,5 @@ export {
     useGetUtilisateurById,
   useGetProfileImage,
   useEditMyProfile,
+  useAdminEditProfile,
 };

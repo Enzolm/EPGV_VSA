@@ -22,11 +22,12 @@ import {
   Undo2Icon,
 } from "lucide-react";
 import { useGetProfileImage } from "@/hooks/useUtilisateur";
-import { useEffect } from "react";
+import { use, useEffect, useState } from "react";
 import GestionProfile from "@/Page/Admin/GestionProfile";
 
 function AdminNavBar() {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const user = useUserStore((state) => state.user);
   const { imageUrl, loading, error, fetchImageUrl } = useGetProfileImage();
 
@@ -34,7 +35,11 @@ function AdminNavBar() {
     if (user) {
       fetchImageUrl(user.id.toString());
     }
-  }, [user?.id]);
+  }, [user?.id, open]);
+
+  useEffect(() => {
+    console.log("################## :", user);
+  }, [user, open]);
 
   return (
     <>
@@ -86,7 +91,7 @@ function AdminNavBar() {
               </div>
             </PopoverTrigger>
             <PopoverContent className="w-42 m-0 gap-0 p-0">
-              <Dialog>
+              <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                   <Button variant="ghost" className=" justify-start">
                     <UserRound className="mr-2" />
@@ -97,7 +102,10 @@ function AdminNavBar() {
                   <DialogTitle className="text-lg font-semibold mb-4">
                     Modifier mon profil
                   </DialogTitle>
-                  <GestionProfile id={user?.id || null} />
+                  <GestionProfile
+                    id={user?.id || null}
+                    onClose={() => setOpen(false)}
+                  />
                 </DialogContent>
               </Dialog>
               <Button
