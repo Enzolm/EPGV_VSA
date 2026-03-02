@@ -6,7 +6,8 @@ import { MapPin, Mail, Phone } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import Footer from "@/composant/Footer";
 import m_b from "@/assets/M_B.jpg";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 
 type FormData = {
   prenom: string;
@@ -14,13 +15,25 @@ type FormData = {
   email: string;
   sujet: string;
   message: string;
+  validation: boolean;
 };
 
 const Contact = () => {
-  const { register, handleSubmit } = useForm<FormData>();
+  const { register, handleSubmit, control, watch } = useForm<FormData>();
+  const [agreeTerms, setAgreeTerms] = useState<string | null>(null);
+
+  useEffect(() => {
+    setAgreeTerms(null);
+  }, [watch("validation")]);
 
   const onSubmit = (data: FormData) => {
     console.log("Données du formulaire:", data);
+    if (!data.validation) {
+      setAgreeTerms(
+        "Vous devez accepter les conditions pour soumettre le formulaire",
+      );
+      return;
+    }
   };
 
   return (
@@ -47,44 +60,59 @@ const Contact = () => {
                 <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
                   <Input
                     placeholder="Votre prénom"
-                    {...register("prenom", { required: true })}
+                    {...register("prenom", { required: false })}
                   />
                   <Input
                     placeholder="Votre nom"
-                    {...register("nom", { required: true })}
+                    {...register("nom", { required: false })}
                   />
                 </div>
                 <Input
                   type="email"
                   placeholder="votre.email@exemple.com"
-                  {...register("email", { required: true })}
+                  {...register("email", { required: false })}
                 />
                 <Input
                   type="text"
                   placeholder="Sujet de votre message"
-                  {...register("sujet", { required: true })}
+                  {...register("sujet", { required: false })}
                 />
                 <Textarea
                   placeholder="Écrivez votre message ici..."
                   rows={3}
                   className="h-30"
-                  {...register("message", { required: true })}
+                  {...register("message", { required: false })}
                 />
               </div>
               <div className="flex gap-3">
-                <Checkbox />
+                <Controller
+                  name="validation"
+                  control={control}
+                  rules={{ required: false }}
+                  defaultValue={false}
+                  render={({ field }) => (
+                    <Checkbox
+                      onCheckedChange={field.onChange}
+                      checked={field.value}
+                    />
+                  )}
+                />
+
                 <p className="max-w-md">
                   En soumettant ce formulaire, j'accepte que les informations
                   saisies dans ce formulaire soient exploitées pour permettre de
                   me recontacter ou dans le cadre de la relation commerciale qui
                   découlerait de cette demande.
-                  <span className="text-red-600">*</span>
+                  <span className="text-red-500">*</span>
                 </p>
               </div>
+              {agreeTerms !== null && (
+                <p className="text-red-500">{agreeTerms}</p>
+              )}
 
               <Button className="w-full mt-4">Envoyer</Button>
               <p className="text-xs">
-                <span className="text-red-600">*</span> Information(s)
+                <span className="text-red-500">*</span> Information(s)
                 nécessaire(s) afin de traiter au mieux votre demande.
               </p>
             </div>

@@ -8,7 +8,7 @@ Site de référence: http://gym-volontaire-vsa.fr/
 Pages :
 
 - Accueil
-  -Actualités
+- Actualités
 - Sport Santé (à confirmer)
 - Nous contacter
 - Panel de gestion
