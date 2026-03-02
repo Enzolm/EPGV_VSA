@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const sendActivationEmail =
   require("../services/mail.service").sendActivationEmail;
+const sendPasswordResetEmail =
+  require("../services/mail.service").sendPasswordResetEmail;
 
 const path = require("path");
 const fs = require("fs");
@@ -59,6 +61,34 @@ const create_user_admin = async (req, res) => {
     }
   } finally {
     if (conn) conn.release();
+  }
+};
+
+const resendActivationEmail = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const [rows] = await db.execute(
+      `SELECT id FROM users WHERE email = ? LIMIT 1`,
+      [email],
+    );
+    if (!rows.length) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email non trouvé" });
+    }
+    const userId = rows[0].id;
+    const token = crypto.randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    await db.execute(
+      `INSERT INTO user_activation_tokens (user_id, token, expires_at)
+       VALUES (?, ?, ?)`,
+      [userId, token, expiresAt],
+    );
+    await sendActivationEmail(email, token);
+    res.json({ success: true, message: "Email d'activation renvoyé" });
+  } catch (err) {
+    console.error("Erreur lors du renvoi de l'email d'activation:", err);
+    res.status(500).json({ success: false, message: "Erreur serveur" });
   }
 };
 
@@ -285,6 +315,92 @@ const AdminEdit = async (req, res) => {
   }
 };
 
+const ForgotPassword = async (req, res) => {
+  if (!req.body || typeof req.body.email === "undefined") {
+    return res.status(400).json({
+      success: false,
+      message: "Email manquant dans le corps de la requête.",
+    });
+  }
+  const { email } = req.body;
+  try {
+    const [rows] = await db.execute(
+      `SELECT id FROM users WHERE email = ? LIMIT 1`,
+      [email],
+    );
+    if (!rows.length) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email non trouvé" });
+    }
+    const userId = rows[0].id;
+    const token = crypto.randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+    await db.execute(
+      `INSERT INTO password_reset_tokens (user_id, token, expires_at)
+       VALUES (?, ?, ?)`,
+      [userId, token, expiresAt],
+    );
+    await sendPasswordResetEmail(email, token);
+    res.json({ success: true, message: "Email de réinitialisation envoyé" });
+  } catch (err) {
+    console.error(
+      "Erreur lors de la demande de réinitialisation de mot de passe:",
+      err,
+    );
+    res.status(500).json({ success: false, message: "Erreur serveur" });
+  }
+};
+
+const ResetPassword = async (req, res) => {
+  const { token, password, confirmPassword } = req.body;
+  if (!token || !password || !confirmPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Token et nouveau mot de passe sont requis.",
+    });
+  }
+  if (password !== confirmPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Les mots de passe ne correspondent pas.",
+    });
+  }
+  try {
+    const [rows] = await db.execute(
+      `SELECT user_id, expires_at, used_at FROM password_reset_tokens WHERE token = ?`,
+      [token],
+    );
+    if (!rows.length) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Token invalide" });
+    }
+    const data = rows[0];
+    if (data.used_at || new Date(data.expires_at) < new Date()) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Token expiré ou déjà utilisé" });
+    }
+    const hash = await bcrypt.hash(password, 10);
+    await db.execute(`UPDATE users SET password = ? WHERE id = ?`, [
+      hash,
+      data.user_id,
+    ]);
+    await db.execute(
+      `UPDATE password_reset_tokens SET used_at = NOW() WHERE token = ?`,
+      [token],
+    );
+    res.json({
+      success: true,
+      message: "Mot de passe réinitialisé avec succès",
+    });
+  } catch (err) {
+    console.error("Erreur lors de la réinitialisation du mot de passe:", err);
+    res.status(500).json({ success: false, message: "Erreur serveur" });
+  }
+};
+
 module.exports = {
   getAllUsers,
   create_user_admin,
@@ -297,4 +413,7 @@ module.exports = {
   getProfileImage,
   editProfile,
   AdminEdit,
+  ForgotPassword,
+  ResetPassword,
+  resendActivationEmail,
 };

@@ -1,15 +1,7 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import type { Article } from "@/hooks/useArticle";
 import ReadOnlyEditor from "@/lib/read-onlyeditor";
-import { ArrowLeft, Megaphone } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router";
+import { Megaphone } from "lucide-react";
 
 function Actus_preview({
   open,
@@ -20,7 +12,6 @@ function Actus_preview({
   onClose: () => void;
   article: Article;
 }) {
-  const navigate = useNavigate();
   return (
     <>
       <Dialog open={open} onOpenChange={onClose}>

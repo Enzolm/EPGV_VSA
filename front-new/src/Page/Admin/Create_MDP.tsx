@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Logo from "@/assets/logo_sf.png";
 import { useCheckTokenCreationValidity } from "@/hooks/useUtilisateur";
 import { useEffect, useState } from "react";
-import { useParams, useNavigate, data } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { useActiveAccount } from "@/hooks/useUtilisateur";
@@ -23,11 +23,7 @@ const Create_MDP = () => {
   const [samePasswordError, setSamePasswordError] = useState<string | null>(
     null,
   );
-  const {
-    createPassword,
-    loading: activeAccountLoading,
-    error: activeAccountError,
-  } = useActiveAccount();
+  const { createPassword, loading: activeAccountLoading } = useActiveAccount();
 
   useEffect(() => {
     const verify = async () => {

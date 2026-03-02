@@ -27,7 +27,7 @@ function ActusGesiton() {
   const navigate = useNavigate();
   const [DialogDeleteOpen, setDialogDeleteOpen] = useState(false);
   const [SelectedArticle, setSelectedArticle] = useState<Article | null>(null);
-  const { articles, loading, error, refresh } = useAdminAllArticles();
+  const { articles, loading, refresh } = useAdminAllArticles();
   const {
     deleteArticle,
     loading: deleteLoading,

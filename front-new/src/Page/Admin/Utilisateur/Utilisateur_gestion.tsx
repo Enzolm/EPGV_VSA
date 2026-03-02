@@ -19,6 +19,7 @@ import {
   useLockAccount,
   useUnlockAccount,
   useDeleteAccount,
+  useResendActivationEmail,
 } from "@/hooks/useUtilisateur";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +34,7 @@ import {
   UserLock,
   Trash2,
   UserCheck,
+  CircleAlert,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Field } from "@/components/ui/field";
@@ -48,11 +50,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import UtilisateurEdition from "./Utilisateur_Edition";
+import { toast } from "sonner";
 
 function UtilisateurGestion() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [openResend, setOpenResend] = useState(false);
   const { utilisateurs, loading, error, refresh } = useGetAllUtilisateurs();
+  const {
+    resendActivationEmail,
+    loading: resetPasswordLoading,
+    error: resetPasswordError,
+  } = useResendActivationEmail();
   const {
     lockAccount,
     loading: lockLoading,
@@ -110,6 +119,20 @@ function UtilisateurGestion() {
 
   const handleDelete = (id: string) => {
     deleteAccount(id);
+  };
+
+  const handleResendActivationEmail = async (email: string) => {
+    const response = await resendActivationEmail(email);
+    if (response && response.success) {
+      setOpenResend(false);
+      toast.success(
+        response.message || "Email d'activation renvoyé avec succès",
+      );
+    } else {
+      toast.error(
+        response?.message || "Erreur lors de l'envoi de l'email d'activation",
+      );
+    }
   };
 
   return (
@@ -240,90 +263,142 @@ function UtilisateurGestion() {
                           <SquarePen className="w-4 h-4" />
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent align="end" className="w-32 p-0 gap-0">
-                        <Dialog open={open} onOpenChange={setOpen}>
-                          <DialogTrigger className="w-full">
+                      <PopoverContent
+                        align="end"
+                        className="p-0 gap-0 w-fit flex "
+                      >
+                        <div className="w-fit flex flex-col justify-start">
+                          <Dialog open={open} onOpenChange={setOpen}>
+                            <DialogTrigger className="w-full">
+                              <Button
+                                variant="ghost"
+                                className=" justify-start w-full"
+                              >
+                                <UserRoundPenIcon className="w-4 h-4 mr-2" />
+                                Modifier
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>
+                                  Modifier le profil de {utilisateur.prenom}{" "}
+                                  {utilisateur.nom}
+                                </DialogTitle>
+                              </DialogHeader>
+                              <UtilisateurEdition
+                                id={utilisateur.id}
+                                onClose={() => {
+                                  setOpen(false);
+                                }}
+                              />
+                            </DialogContent>
+                          </Dialog>
+                          {utilisateur.status !== "desactivated" ? (
                             <Button
                               variant="ghost"
-                              className="w-full justify-start"
+                              className=" justify-start w-full"
+                              onClick={() => handleLock(utilisateur.id)}
                             >
-                              <UserRoundPenIcon className="w-4 h-4 mr-2" />
-                              Modifier
+                              {lockLoading ? (
+                                <Spinner className="w-4 h-4 mr-2" />
+                              ) : (
+                                <UserLock className="w-4 h-4 mr-2" />
+                              )}
+                              Désactiver
                             </Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>
-                                Modifier le profil de {utilisateur.prenom}{" "}
-                                {utilisateur.nom}
-                              </DialogTitle>
-                            </DialogHeader>
-                            <UtilisateurEdition
-                              id={utilisateur.id}
-                              onClose={() => {
-                                setOpen(false);
-                              }}
-                            />
-                          </DialogContent>
-                        </Dialog>
-                        {utilisateur.status !== "desactivated" ? (
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start"
-                            onClick={() => handleLock(utilisateur.id)}
-                          >
-                            {lockLoading ? (
-                              <Spinner className="w-4 h-4 mr-2" />
-                            ) : (
-                              <UserLock className="w-4 h-4 mr-2" />
-                            )}
-                            Désactiver
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start"
-                            onClick={() => handleUnlock(utilisateur.id)}
-                          >
-                            {unlockLoading ? (
-                              <Spinner className="w-4 h-4 mr-2" />
-                            ) : (
-                              <UserCheck className="w-4 h-4 mr-2" />
-                            )}
-                            Activer
-                          </Button>
-                        )}
-                        <Dialog>
-                          <DialogTrigger className="w-full">
+                          ) : (
                             <Button
                               variant="ghost"
-                              className="w-full justify-start text-red-500 hover:text-red-500"
+                              className=" justify-start w-full"
+                              onClick={() => handleUnlock(utilisateur.id)}
                             >
-                              <Trash2 className="w-4 h-4 mr-2" />
-                              Supprimer
+                              {unlockLoading ? (
+                                <Spinner className="w-4 h-4 mr-2" />
+                              ) : (
+                                <UserCheck className="w-4 h-4 mr-2" />
+                              )}
+                              Activer
                             </Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>
-                                Confirmer la suppression
-                              </DialogTitle>
-                              <DialogDescription>
-                                Êtes-vous sûr de vouloir supprimer cet
-                                utilisateur ? Cette action est irréversible.
-                              </DialogDescription>
-                            </DialogHeader>
-                            <Button
-                              variant="destructive"
-                              className="mt-4"
-                              onClick={() => {
-                                handleDelete(utilisateur.id);
-                              }}
+                          )}
+                          {utilisateur.status === "waiting_password" && (
+                            <Dialog
+                              open={openResend}
+                              onOpenChange={setOpenResend}
                             >
-                              Supprimer définitivement
-                            </Button>
-                          </DialogContent>
-                        </Dialog>
+                              <DialogTrigger className="w-full">
+                                <Button
+                                  variant="ghost"
+                                  className=" justify-start w-full"
+                                >
+                                  <CircleAlert className="w-4 h-4 mr-2" />
+                                  Renvoyer l'email d'activation
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>
+                                    Renvoyer l'email d'activation à{" "}
+                                    {utilisateur.prenom} {utilisateur.nom} ?
+                                  </DialogTitle>
+                                </DialogHeader>
+                                <p>
+                                  Êtes-vous sûr de vouloir renvoyer l'email
+                                  d'activation à {utilisateur.prenom}{" "}
+                                  {utilisateur.nom} ?
+                                </p>
+                                <div className="flex flex-wrap gap-2 align-middle items-center justify-end">
+                                  <Button
+                                    variant="outline"
+                                    onClick={() => setOpenResend(false)}
+                                  >
+                                    Annuler
+                                  </Button>
+                                  <Button
+                                    className=""
+                                    onClick={() =>
+                                      handleResendActivationEmail(
+                                        utilisateur.email,
+                                      )
+                                    }
+                                  >
+                                    Renvoyer l'email d'activation
+                                  </Button>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                          )}
+                          <Dialog>
+                            <DialogTrigger className="w-full">
+                              <Button
+                                variant="ghost"
+                                className="w-full justify-start text-red-500 hover:text-red-500"
+                              >
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                Supprimer
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>
+                                  Confirmer la suppression
+                                </DialogTitle>
+                                <DialogDescription>
+                                  Êtes-vous sûr de vouloir supprimer cet
+                                  utilisateur ? Cette action est irréversible.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <Button
+                                variant="destructive"
+                                className="mt-4"
+                                onClick={() => {
+                                  handleDelete(utilisateur.id);
+                                }}
+                              >
+                                Supprimer définitivement
+                              </Button>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
                       </PopoverContent>
                     </Popover>
                   </TableCell>

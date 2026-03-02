@@ -1,9 +1,8 @@
-import { data, useLocation, useParams } from "react-router";
+import { useParams } from "react-router";
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectTrigger,
@@ -20,20 +19,14 @@ import type { Editor } from "@tiptap/react";
 import Actus_preview from "@/Page/Admin/Actualité/Actus_preview";
 
 function Actus_edition() {
-  const location = useLocation();
   const navigate = useNavigate();
   const [editorValue, setEditorValue] = useState<Editor | null>(null);
-  const [isDraft, setIsDraft] = useState(false);
+  const [isDraft] = useState(false);
   const { id } = useParams<{ id: string }>();
   const [openPreview, setOpenPreview] = useState(false);
 
-  const { loading, updateArticle, error, success } = useUpdateArticle(id || "");
-  const {
-    article: existingArticle,
-    imageUrl,
-    loading: loadingArticle,
-    error: errorArticle,
-  } = useArticleById(id || null);
+  const { loading, updateArticle, success } = useUpdateArticle(id || "");
+  const { article: existingArticle, imageUrl } = useArticleById(id || null);
 
   const [localPreview, setLocalPreview] = useState<string | null>(null);
   const [removeImage, setRemoveImage] = useState(false);

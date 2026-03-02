@@ -20,19 +20,12 @@ const GestionProfile = ({
   onClose: () => void;
 }) => {
   const { imageUrl, loading, error, fetchImageUrl } = useGetProfileImage();
-  const {
-    utilisateur,
-    loading: utilisateurLoading,
-    error: utilisateurError,
-  } = useGetUtilisateurById(id?.toString() || "");
+  const { utilisateur, loading: utilisateurLoading } = useGetUtilisateurById(
+    id?.toString() || "",
+  );
   const { register, control, handleSubmit, setValue } = useForm();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const {
-    editMyProfile,
-    loading: updateLoading,
-    error: updateError,
-    success,
-  } = useEditMyProfile();
+  const { editMyProfile, loading: updateLoading } = useEditMyProfile();
   const { setUser } = useUserStore();
 
   useEffect(() => {

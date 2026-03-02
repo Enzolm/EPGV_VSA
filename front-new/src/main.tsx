@@ -9,9 +9,11 @@ import Actu_page from "@/Page/Actualite/Actu_page";
 import Contact from "@/Page/Contact/Contact";
 import Panel from "@/Page/Admin/Panel";
 import Login from "@/Page/Admin/Login";
+import ForgotPassword from "./Page/Admin/ForgotPassword";
 import Create_MDP from "@/Page/Admin/Create_MDP";
 import Actu_info from "./Page/Actualite/Actu_info";
 import AuthProvider from "@/lib/ProtectedRoute";
+import ForgotPasswordEmail from "./Page/Admin/ForgotEmail";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -35,7 +37,11 @@ createRoot(document.getElementById("root")!).render(
         <Route path="/gestion/actus/edition/:id" element={<Panel />} />
 
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot/email" element={<ForgotPasswordEmail />} />
+        <Route path="/reset-password/:token" element={<ForgotPassword />} />
         <Route path="/create_mdp/:token" element={<Create_MDP />} />
+
+        <Route path="*" element={<Accueil />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

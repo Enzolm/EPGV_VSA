@@ -12,7 +12,6 @@ import {
   DialogTrigger,
   DialogContent,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   LogOut,
@@ -20,16 +19,19 @@ import {
   FilesIcon,
   Users2Icon,
   Undo2Icon,
+  KeyRound,
 } from "lucide-react";
 import { useGetProfileImage } from "@/hooks/useUtilisateur";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import GestionProfile from "@/Page/Admin/GestionProfile";
+import GestionPassword from "@/Page/Admin/GestionPassword";
 
 function AdminNavBar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [openPassword, setOpenPassword] = useState(false);
   const user = useUserStore((state) => state.user);
-  const { imageUrl, loading, error, fetchImageUrl } = useGetProfileImage();
+  const { imageUrl, fetchImageUrl } = useGetProfileImage();
 
   useEffect(() => {
     if (user) {
@@ -105,6 +107,23 @@ function AdminNavBar() {
                   <GestionProfile
                     id={user?.id || null}
                     onClose={() => setOpen(false)}
+                  />
+                </DialogContent>
+              </Dialog>
+              <Dialog open={openPassword} onOpenChange={setOpenPassword}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" className=" justify-start">
+                    <KeyRound className="mr-2" />
+                    Mot de passe
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogTitle className="text-lg font-semibold mb-4">
+                    Modifier mon mot de passe
+                  </DialogTitle>
+                  <GestionPassword
+                    id={user?.id || null}
+                    onClose={() => setOpenPassword(false)}
                   />
                 </DialogContent>
               </Dialog>

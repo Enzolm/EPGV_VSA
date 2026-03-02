@@ -6,6 +6,7 @@ const sendActivationEmail =
 const UserController = require("../controllers/user_controller");
 
 router.post("/create/admin", UserController.create_user_admin);
+router.post("/resend-activation-email", UserController.resendActivationEmail);
 router.get("/token/creation/check/:token", UserController.tokenValideChecker);
 router.post("/activate/account", UserController.activateAccount);
 router.get("/get/all", UserController.getAllUsers);
@@ -16,6 +17,8 @@ router.get("/:id", UserController.userById);
 router.get("/profile-image/:filename", UserController.getProfileImage);
 router.put("/edit-profile/:id", UserController.editProfile);
 router.put("/admin/edit-profile/:id", UserController.AdminEdit);
+router.post("/forgot-password", UserController.ForgotPassword);
+router.post("/reset-password", UserController.ResetPassword);
 
 router.get("/test-mail", async (req, res) => {
   try {

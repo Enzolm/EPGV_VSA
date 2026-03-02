@@ -2,10 +2,10 @@ import Logo from "../../assets/logo_sf.png";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
-import useAuth from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 
 type FormData = {
   email: string;
@@ -13,7 +13,7 @@ type FormData = {
 };
 
 const Login = () => {
-  const { isAuthenticated, login, loading, error } = useAuth();
+  const { isAuthenticated, login, error, loading } = useAuth();
   const { register, handleSubmit } = useForm<FormData>();
   const navigate = useNavigate();
 
@@ -55,10 +55,26 @@ const Login = () => {
             placeholder="Mot de passe"
             className="border border-gray-300 rounded-md p-2"
           />
-          <Button type="submit" className=" text-white hover:cursor-pointer">
-            Se connecter
+          <Label className="text-sm text-gray-600 justify-end flex">
+            <a
+              className="text-blue-500 hover:underline text-right"
+              href="/forgot/email"
+            >
+              Mot de passe oublié ?
+            </a>
+          </Label>
+          <Button
+            type="submit"
+            className=" text-white hover:cursor-pointer"
+            disabled={loading}
+          >
+            {loading ? "Connexion en cours..." : "Se connecter"}
           </Button>
-          {error && <p className="text-red-500 text-start">{error}</p>}
+          {error &&
+            error.code !== "NO_TOKEN" &&
+            error.code !== "INVALID_TOKEN" && (
+              <p className="text-red-500 text-start">{error.message}</p>
+            )}
         </form>
       </div>
     </div>

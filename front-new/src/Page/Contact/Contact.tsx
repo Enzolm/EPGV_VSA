@@ -6,8 +6,23 @@ import { MapPin, Mail, Phone } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import Footer from "@/composant/Footer";
 import m_b from "@/assets/M_B.jpg";
+import { useForm } from "react-hook-form";
+
+type FormData = {
+  prenom: string;
+  nom: string;
+  email: string;
+  sujet: string;
+  message: string;
+};
 
 const Contact = () => {
+  const { register, handleSubmit } = useForm<FormData>();
+
+  const onSubmit = (data: FormData) => {
+    console.log("Données du formulaire:", data);
+  };
+
   return (
     <>
       <Navbar />
@@ -22,83 +37,103 @@ const Contact = () => {
         </div>
 
         <div className="flex flex-wrap  gap-4 justify-center items-center ">
-          <div className="border border-black/10 max-w-lg rounded-lg bg-white p-6 shadow-md m-4 flex flex-col gap-8">
-            <h2 className="text-xl font-bold">Envoyez-nous un message</h2>
-            <div className="flex flex-col gap-4">
-              <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-                <Input placeholder="Votre prénom" />
-                <Input placeholder="Votre nom" />
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="border border-black/10 max-w-lg rounded-lg bg-white p-6 shadow-md m-4 flex flex-col gap-8"
+          >
+            <div className="border border-black/10 max-w-lg rounded-lg bg-white p-6 shadow-md m-4 flex flex-col gap-8">
+              <h2 className="text-xl font-bold">Envoyez-nous un message</h2>
+              <div className="flex flex-col gap-4">
+                <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
+                  <Input
+                    placeholder="Votre prénom"
+                    {...register("prenom", { required: true })}
+                  />
+                  <Input
+                    placeholder="Votre nom"
+                    {...register("nom", { required: true })}
+                  />
+                </div>
+                <Input
+                  type="email"
+                  placeholder="votre.email@exemple.com"
+                  {...register("email", { required: true })}
+                />
+                <Input
+                  type="text"
+                  placeholder="Sujet de votre message"
+                  {...register("sujet", { required: true })}
+                />
+                <Textarea
+                  placeholder="Écrivez votre message ici..."
+                  rows={3}
+                  className="h-30"
+                  {...register("message", { required: true })}
+                />
               </div>
-              <Input type="email" placeholder="votre.email@exemple.com" />
-              <Input type="text" placeholder="Sujet de votre message" />
-              <Textarea
-                placeholder="Écrivez votre message ici..."
-                rows={3}
-                className="h-30"
-              />
-            </div>
-            <div className="flex gap-3">
-              <Checkbox />
-              <p className="max-w-md">
-                En soumettant ce formulaire, j'accepte que les informations
-                saisies dans ce formulaire soient exploitées pour permettre de
-                me recontacter ou dans le cadre de la relation commerciale qui
-                découlerait de cette demande.
-                <span className="text-red-600">*</span>
+              <div className="flex gap-3">
+                <Checkbox />
+                <p className="max-w-md">
+                  En soumettant ce formulaire, j'accepte que les informations
+                  saisies dans ce formulaire soient exploitées pour permettre de
+                  me recontacter ou dans le cadre de la relation commerciale qui
+                  découlerait de cette demande.
+                  <span className="text-red-600">*</span>
+                </p>
+              </div>
+
+              <Button className="w-full mt-4">Envoyer</Button>
+              <p className="text-xs">
+                <span className="text-red-600">*</span> Information(s)
+                nécessaire(s) afin de traiter au mieux votre demande.
               </p>
             </div>
 
-            <Button className="w-full mt-4">Envoyer</Button>
-            <p className="text-xs">
-              <span className="text-red-600">*</span> Information(s)
-              nécessaire(s) afin de traiter au mieux votre demande.
-            </p>
-          </div>
+            <div className=" flex gap-4 flex-col justify-center items-center">
+              <div className="w-50vw">
+                <div className=" border border-black/10 max-w-lg rounded-lg bg-white p-6 shadow-md m-4 flex flex-col gap-8">
+                  <h1 className="font-semibold text-xl">Nos Coordonnées</h1>
+                  <div className="flex items-center gap-2">
+                    <MapPin color="green" />
+                    <div>
+                      <p className="font-semibold">Adresse</p>
+                      <p>6 Rue de Noncerve, 91580 Villeneuve-sur-Auvers</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Mail color="green" />
+                    <div>
+                      <p className="font-semibold">Email</p>
+                      <p>contact@gym-volontaire-vsa.fr</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Phone color="green" />
+                    <div>
+                      <p className="font-semibold">Téléphone</p>
+                      <p>+33 1 23 45 67 89</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-          <div className=" flex gap-4 flex-col justify-center items-center">
-            <div className="w-50vw">
-              <div className=" border border-black/10 max-w-lg rounded-lg bg-white p-6 shadow-md m-4 flex flex-col gap-8">
-                <h1 className="font-semibold text-xl">Nos Coordonnées</h1>
-                <div className="flex items-center gap-2">
-                  <MapPin color="green" />
-                  <div>
-                    <p className="font-semibold">Adresse</p>
-                    <p>6 Rue de Noncerve, 91580 Villeneuve-sur-Auvers</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Mail color="green" />
-                  <div>
-                    <p className="font-semibold">Email</p>
-                    <p>contact@gym-volontaire-vsa.fr</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Phone color="green" />
-                  <div>
-                    <p className="font-semibold">Téléphone</p>
-                    <p>+33 1 23 45 67 89</p>
+              <div className="w-full max-w-md px-4 md:px-0">
+                <div className="rounded-lg shadow-md overflow-hidden">
+                  <div className="relative" style={{ paddingTop: "78.125%" }}>
+                    {" "}
+                    {/* Mantient le ratio d'aspect 350/448 de la carte */}
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d169166.60850588762!2d2.3027818857910054!3d48.50968886855793!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e5c6099b979cf5%3A0xa7610bcc970d6dea!2sSalle%20Polyvalente!5e0!3m2!1sfr!2sfr!4v1764598706852!5m2!1sfr!2sfr"
+                      className="absolute top-0 left-0 w-full h-full"
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    ></iframe>
                   </div>
                 </div>
               </div>
             </div>
-
-            <div className="w-full max-w-md px-4 md:px-0">
-              <div className="rounded-lg shadow-md overflow-hidden">
-                <div className="relative" style={{ paddingTop: "78.125%" }}>
-                  {" "}
-                  {/* Mantient le ratio d'aspect 350/448 de la carte */}
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d169166.60850588762!2d2.3027818857910054!3d48.50968886855793!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e5c6099b979cf5%3A0xa7610bcc970d6dea!2sSalle%20Polyvalente!5e0!3m2!1sfr!2sfr!4v1764598706852!5m2!1sfr!2sfr"
-                    className="absolute top-0 left-0 w-full h-full"
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  ></iframe>
-                </div>
-              </div>
-            </div>
-          </div>
+          </form>
         </div>
       </div>
       <section>

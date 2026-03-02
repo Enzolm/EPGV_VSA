@@ -1,9 +1,7 @@
-import { data, useLocation } from "react-router";
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import {
   Select,
@@ -20,10 +18,9 @@ import type { Editor } from "@tiptap/core";
 import { flushPendingImageUploads } from "@/lib/tiptap-utils";
 
 function Actus_creation() {
-  const location = useLocation();
   const navigate = useNavigate();
   const [isDraft, setIsDraft] = useState(false);
-  const { loading, createArticle, error, success } = useCreateArticle();
+  const { loading, createArticle, success } = useCreateArticle();
   const { register, handleSubmit, control } = useForm<Partial<Article>>();
   const [editorValue, setEditorValue] = useState<Editor | null>(null);
   const [localPreview, setLocalPreview] = useState<string | null>(null);

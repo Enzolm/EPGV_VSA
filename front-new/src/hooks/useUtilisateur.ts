@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import api from "@/lib/axios";
-import { set } from "react-hook-form";
 
 export interface Utilisateur {
   id: string;
@@ -345,6 +344,86 @@ const useAdminEditProfile = () => {
   return { editProfile, loading, error, success };
 }
 
+const useSendForgotPasswordEmail = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<{ success: boolean; message: string } | null>(null);
+  
+  const sendForgotPasswordEmail = async (email: string) => {
+    try {
+      setLoading(true);
+      const response = await api.post("/users/forgot-password", { email });
+      setSuccess(response.data);
+      return response.data;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de l'envoi de l'email de réinitialisation.");
+      setSuccess({ success: false, message: err.response?.data?.message || "Erreur lors de l'envoi de l'email de réinitialisation." });
+      return { success: false, message: err.response?.data?.message || "Erreur lors de l'envoi de l'email de réinitialisation." };
+    } finally {
+      setLoading(false);
+    }
+
+  };
+
+  return { sendForgotPasswordEmail, loading, error, success };
+}
+
+const useForgotPassword = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<{ success: boolean; message: string } | null>(null);
+
+  const resetPassword = async (token: string | undefined, newPassword: string, confirmPassword: string) => {
+    if (!token) {
+      setError("Token manquant.");
+      setSuccess({ success: false, message: "Token manquant." });
+      return { success: false, message: "Token manquant." };
+    }
+    if (newPassword !== confirmPassword) {
+      setError("Les mots de passe ne correspondent pas.");
+      setSuccess({ success: false, message: "Les mots de passe ne correspondent pas." });
+      return { success: false, message: "Les mots de passe ne correspondent pas." };
+    }
+    try {
+      setLoading(true);
+      const response = await api.post("/users/reset-password", { token, password: newPassword, confirmPassword });
+      setSuccess(response.data);
+      return response.data;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de la réinitialisation du mot de passe.");
+      setSuccess({ success: false, message: err.response?.data?.message || "Erreur lors de la réinitialisation du mot de passe." });
+      return { success: false, message: err.response?.data?.message || "Erreur lors de la réinitialisation du mot de passe." };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { resetPassword, loading, error, success };
+}
+
+const useResendActivationEmail = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<{ success: boolean; message: string } | null>(null);
+
+  const resendActivationEmail = async (email: string) => {
+    try {
+      setLoading(true);
+      const response = await api.post("/users/resend-activation-email", { email });
+      setSuccess(response.data);
+      return response.data;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Erreur lors de l'envoi de l'email d'activation.");
+      setSuccess({ success: false, message: err.response?.data?.message || "Erreur lors de l'envoi de l'email d'activation." });
+      return { success: false, message: err.response?.data?.message || "Erreur lors de l'envoi de l'email d'activation." };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { resendActivationEmail, loading, error, success };
+}
+
 export {
   useUtilisateurs,
   useCreateUtilisateur,
@@ -358,4 +437,7 @@ export {
   useGetProfileImage,
   useEditMyProfile,
   useAdminEditProfile,
+  useSendForgotPasswordEmail,
+  useForgotPassword,
+  useResendActivationEmail,
 };

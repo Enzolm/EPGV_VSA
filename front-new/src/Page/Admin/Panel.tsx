@@ -2,7 +2,6 @@ import AdminNavBar from "@/composant/Admin_Navbar";
 import { useLocation } from "react-router";
 import UtilisateurGestion from "@/Page/Admin/Utilisateur/Utilisateur_gestion";
 import ActusGesiton from "@/Page/Admin/Actualité/Actus_gestion";
-import { useEffect, useState } from "react";
 import Actus_creation from "./Actualité/Actus_creation";
 import Actus_edition from "./Actualité/Actus_Edition";
 import Utilisateur_creation from "./Utilisateur/Utilisateur_creation";
