@@ -21,7 +21,8 @@ function Actus_creation() {
   const navigate = useNavigate();
   const [isDraft, setIsDraft] = useState(false);
   const { loading, createArticle, success } = useCreateArticle();
-  const { register, handleSubmit, control } = useForm<Partial<Article>>();
+  const { register, handleSubmit, control, setValue } =
+    useForm<Partial<Article>>();
   const [editorValue, setEditorValue] = useState<Editor | null>(null);
   const [localPreview, setLocalPreview] = useState<string | null>(null);
 
@@ -33,6 +34,11 @@ function Actus_creation() {
     } else {
       setLocalPreview(null);
     }
+  };
+
+  const handleRemoveImage = () => {
+    setLocalPreview(null);
+    setValue("img", undefined);
   };
 
   const onSubmit: SubmitHandler<Partial<Article>> = async (data) => {
@@ -131,9 +137,24 @@ function Actus_creation() {
           <img
             src={localPreview}
             alt="Aperçu"
-            className="h-40 w-auto rounded border"
+            className="h-48 w-md rounded border object-cover "
           />
         )}
+        <div className="flex gap-2">
+          <p className="text-sm text-gray-600 self-center">
+            Taille d'image de miniature recommandé: 448px x 192px
+          </p>
+          {localPreview && (
+            <Button
+              type="button"
+              variant="secondary"
+              className="text-red-500"
+              onClick={handleRemoveImage}
+            >
+              Supprimer l'image
+            </Button>
+          )}
+        </div>
 
         <Input {...register("img")} type="file" onChange={handleFileChange} />
         <div className="">

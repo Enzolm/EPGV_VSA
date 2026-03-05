@@ -8,7 +8,7 @@ type UserState = {
     prenom: string;
     role: string;
     status: string;
-    isAdmin: boolean;
+    isAdmin: number;
   } | null;
   setUser: (user: UserState["user"]) => void;
 };

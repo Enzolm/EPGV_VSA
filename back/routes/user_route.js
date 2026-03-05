@@ -2,21 +2,47 @@ const express = require("express");
 const router = express.Router();
 const sendActivationEmail =
   require("../services/mail.service").sendActivationEmail;
+const { authenticate, authorizeAdmin } = require("../services/token_validator");
 
 const UserController = require("../controllers/user_controller");
 
-router.post("/create/admin", UserController.create_user_admin);
+router.post(
+  "/create/admin",
+  authenticate,
+  authorizeAdmin,
+  UserController.create_user_admin,
+);
 router.post("/resend-activation-email", UserController.resendActivationEmail);
 router.get("/token/creation/check/:token", UserController.tokenValideChecker);
 router.post("/activate/account", UserController.activateAccount);
-router.get("/get/all", UserController.getAllUsers);
-router.get("/account/lock/:id", UserController.lockAccount);
-router.get("/account/unlock/:id", UserController.unlockAccount);
-router.delete("/account/delete/:id", UserController.deleteAccount);
-router.get("/:id", UserController.userById);
+router.get("/get/all", authenticate, UserController.getAllUsers);
+router.get(
+  "/account/lock/:id",
+  authenticate,
+  authorizeAdmin,
+  UserController.lockAccount,
+);
+router.get(
+  "/account/unlock/:id",
+  authenticate,
+  authorizeAdmin,
+  UserController.unlockAccount,
+);
+router.delete(
+  "/account/delete/:id",
+  authenticate,
+  authorizeAdmin,
+  UserController.deleteAccount,
+);
+router.get("/:id", authenticate, UserController.userById);
 router.get("/profile-image/:filename", UserController.getProfileImage);
-router.put("/edit-profile/:id", UserController.editProfile);
-router.put("/admin/edit-profile/:id", UserController.AdminEdit);
+router.put("/edit-profile/:id", authenticate, UserController.editProfile);
+router.put(
+  "/admin/edit-profile/:id",
+  authenticate,
+  authorizeAdmin,
+  UserController.AdminEdit,
+);
 router.post("/forgot-password", UserController.ForgotPassword);
 router.post("/reset-password", UserController.ResetPassword);
 
