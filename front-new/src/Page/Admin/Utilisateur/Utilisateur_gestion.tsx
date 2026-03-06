@@ -59,11 +59,7 @@ function UtilisateurGestion() {
   const [openResend, setOpenResend] = useState(false);
   const { utilisateurs, loading, error, refresh } = useGetAllUtilisateurs();
   const userStore = useUserStore();
-  const {
-    resendActivationEmail,
-    loading: resetPasswordLoading,
-    error: resetPasswordError,
-  } = useResendActivationEmail();
+  const { resendActivationEmail } = useResendActivationEmail();
   const {
     lockAccount,
     loading: lockLoading,

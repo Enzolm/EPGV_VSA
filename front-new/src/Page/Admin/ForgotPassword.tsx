@@ -21,7 +21,7 @@ const ForgotPassword = () => {
   const [samePasswordError, setSamePasswordError] = useState<string | null>(
     null,
   );
-  const { resetPassword, loading, error } = useForgotPassword();
+  const { resetPassword, loading } = useForgotPassword();
 
   useEffect(() => {
     console.log("Token reçu:", token);
