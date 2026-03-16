@@ -33,27 +33,28 @@ const Login = () => {
   };
 
   return (
-    <div className="w-screen flex flex-col h-dvh items-center  text-end justify-center align-middle">
-      <div className="bg-white rounded-lg flex flex-col items-center p-6 shadow-md">
-        <img className="h-32 w-32" src={Logo} alt="Logo EPGV" />
-        <h1 className="text-2xl font-semibold mb-6">Connexion</h1>
+    <div className="bg-background w-screen flex flex-col h-dvh items-center  text-end justify-center align-middle">
+      <div className="bg-card rounded-lg border border-border flex flex-col items-center p-6 shadow-md">
+        <img
+          onClick={() => navigate("/")}
+          className="h-32 w-32 hover:cursor-pointer"
+          src={Logo}
+          alt="Logo EPGV"
+        />
+        <h1 className="text-2xl font-semibold mb-6 text-foreground">
+          Connexion
+        </h1>
         <form
           className="flex flex-col gap-4 max-w-sm"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Label>Email</Label>
-          <Input
-            {...register("email")}
-            type="text"
-            placeholder="Email"
-            className="border border-gray-300 rounded-md p-2"
-          />
-          <Label>Mot de passe</Label>
+          <Label className="text-foreground">Email</Label>
+          <Input {...register("email")} type="text" placeholder="Email" />
+          <Label className="text-foreground">Mot de passe</Label>
           <Input
             {...register("password")}
             type="password"
             placeholder="Mot de passe"
-            className="border border-gray-300 rounded-md p-2"
           />
           <Label className="text-sm text-gray-600 justify-end flex">
             <a
@@ -65,7 +66,7 @@ const Login = () => {
           </Label>
           <Button
             type="submit"
-            className=" text-white hover:cursor-pointer"
+            className="hover:cursor-pointer"
             disabled={loading}
           >
             {loading ? "Connexion en cours..." : "Se connecter"}

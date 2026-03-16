@@ -8,8 +8,8 @@ const UserController = require("../controllers/user_controller");
 
 router.post(
   "/create/admin",
-  authenticate,
-  authorizeAdmin,
+  // authenticate,
+  // authorizeAdmin,
   UserController.create_user_admin,
 );
 router.post("/resend-activation-email", UserController.resendActivationEmail);

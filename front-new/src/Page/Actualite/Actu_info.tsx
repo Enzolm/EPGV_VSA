@@ -7,32 +7,50 @@ import { useArticleById } from "@/hooks/useArticle";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Megaphone } from "lucide-react";
 import ReadOnlyEditor from "@/lib/read-onlyeditor";
+import { motion } from "motion/react";
 
 function Actu_info() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { article, loading, error } = useArticleById(id || null);
   console.log("Article chargé dans Actu_info:", article);
+  window.scrollTo({ top: 0, behavior: "instant" });
 
   return (
-    <>
+    <div className="bg-background min-h-dvh">
       <Navbar />
-      <div className="p-8 md:p-16 lg:p-24">
-        <Button
-          variant="ghost"
-          onClick={() => navigate(-1)}
-          className="cursor-pointer"
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4 }}
+        className="p-8 md:p-16 lg:p-24"
+      >
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4 }}
         >
-          <ArrowLeft /> Retour aux actualités
-        </Button>
-        <div className="flex gap-2 mt-3 pl-4">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(-1)}
+            className="cursor-pointer"
+          >
+            <ArrowLeft /> Retour aux actualités
+          </Button>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="flex gap-2 mt-3 pl-4"
+        >
           {article?.type === "annonce_importante" && (
             <Megaphone className="text-yellow-500" />
           )}
           <p
-            className={`text-sm font-normal ${article?.type === "annonce_importante" ? "text-yellow-500" : "text-primary"}`}
+            className={`text-sm font-normal ${article?.type === "annonce_importante" ? "text-yellow-500" : "text-foreground"}`}
           >
-            {" "}
             {article?.type === "actualite"
               ? "Actualité"
               : article?.type === "evenement"
@@ -43,12 +61,23 @@ function Actu_info() {
                     ? "Annonce importante"
                     : ""}
           </p>
-        </div>
-        <h1 className="text-4xl lg:text-5xl font-black tracking-[-0.033em] mt-4">
-          {article?.titre}
-        </h1>
+        </motion.div>
 
-        <div className="mb-8">
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="text-foreground text-4xl lg:text-5xl font-black tracking-[-0.033em] mt-4"
+        >
+          {article?.titre}
+        </motion.h1>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mb-8"
+        >
           {loading ? (
             <Skeleton className="w-full h-64 mb-8 rounded-lg aspect-video" />
           ) : (
@@ -63,18 +92,27 @@ function Actu_info() {
                 year: "numeric",
               })}
           </p>
-          <img
+          <motion.img
+            initial={{ opacity: 0, scale: 1.03 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
             src={`${import.meta.env.VITE_URL_UPLOAD}/${article?.img}`}
             alt={article?.titre}
             className="mt-8 w-full h-64 object-cover rounded-lg mb-8 aspect-video"
           />
-        </div>
-        <article className="prose prose-lg dark:prose-invert max-w-none text-text-light dark:text-text-dark prose-p:opacity-80 prose-headings:font-bold prose-headings:tracking-[-0.015em] prose-a:text-primary hover:prose-a:underline">
+        </motion.div>
+
+        <motion.article
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.35 }}
+          className="prose prose-lg dark:prose-invert max-w-none text-text-light dark:text-text-dark prose-p:opacity-80 prose-headings:font-bold prose-headings:tracking-[-0.015em] prose-a:text-primary hover:prose-a:underline"
+        >
           {article && <ReadOnlyEditor content={article.description} />}
-        </article>
-      </div>
+        </motion.article>
+      </motion.div>
       <Footer />
-    </>
+    </div>
   );
 }
 

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 function Footer() {
   const navigate = useNavigate();
   return (
-    <footer className="bg-card-light border-t border-black/10 border-card-border-light mt-12">
+    <footer className="border-t border-border bg-background mt-12">
       <div className="max-w-8xl mx-auto py-12 px-4 sm:px-6 lg:px-14">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
@@ -13,21 +13,24 @@ function Footer() {
               <div className="size-10 text-primary">
                 <img src={logo_footer} alt="Gym Volontaire Logo" />
               </div>
-              <h2 className="text-lg font-bold">Gym Volontaire</h2>
+              <h2 className="text-lg font-bold text-foreground">
+                Gym Volontaire
+              </h2>
             </div>
-            <p className="text-sm opacity-80">
+            <p className="text-sm text-muted-foreground opacity-80">
               Le sport santé pour tous, près de chez vous. Rejoignez une
               communauté active et bienveillante.
             </p>
           </div>
           <div>
-            <h3 className="text-sm font-bold uppercase tracking-wider">
+            <h3 className="text-foreground text-sm font-bold uppercase tracking-wider">
               Navigation
             </h3>
-            <ul className="mt-4 space-y-2 text-green-700/70">
+            <ul className="mt-4 space-y-2 text-muted-foreground">
               <li>
                 <a
-                  className="cursor-pointer text-sm text-green-700/70 hover:text-green-700/50 hover:transition-colors"
+                  id="hover-animation"
+                  className="cursor-pointer text-sm "
                   onClick={() => navigate("/")}
                 >
                   Accueil
@@ -35,7 +38,8 @@ function Footer() {
               </li>
               <li>
                 <a
-                  className="cursor-pointer text-sm text-green-700/70 hover:text-green-700/50 hover:transition-colors"
+                  id="hover-animation"
+                  className="cursor-pointer text-sm"
                   onClick={() => navigate("/news")}
                 >
                   Actualités
@@ -43,7 +47,8 @@ function Footer() {
               </li>
               <li>
                 <a
-                  className="cursor-pointer text-sm transition-colors hover:text-green-700/50 hover:transition-colors"
+                  id="hover-animation"
+                  className="cursor-pointer text-sm transition-colors "
                   onClick={() => navigate("/sportsante")}
                 >
                   Sport Santé
@@ -51,7 +56,8 @@ function Footer() {
               </li>
               <li>
                 <a
-                  className="cursor-pointer text-sm transition-colors hover:text-green-700/50 hover:transition-colors"
+                  id="hover-animation"
+                  className="cursor-pointer text-sm transition-colors "
                   onClick={() => navigate("/contact")}
                 >
                   Nous contacter
@@ -59,7 +65,8 @@ function Footer() {
               </li>
               <li>
                 <a
-                  className="cursor-pointer text-sm transition-colors hover:text-green-700/50 hover:transition-colors"
+                  id="hover-animation"
+                  className="cursor-pointer text-sm transition-colors "
                   onClick={() => navigate("/gestion")}
                 >
                   Gestion
@@ -68,14 +75,17 @@ function Footer() {
             </ul>
           </div>
           <div>
-            <h3 className="text-sm font-bold uppercase tracking-wider">
+            <h3 className="text-foreground text-sm font-bold uppercase tracking-wider ">
               Contact
             </h3>
-            <ul className="mt-4 space-y-2 text-sm">
-              <li className="flex items-center gap-2 ">
+            <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+              <li
+                className="flex items-center gap-2 "
+                onClick={() => (window.location.href = "geo:48.4717,2.1903")}
+              >
                 <MapPin
                   size={27}
-                  className="text-green-700/70 bg-transparent "
+                  className="text-muted-foreground bg-transparent "
                 />
                 6 Rue de Noncerve, 91580 Villeneuve-sur-Auvers
               </li>
@@ -86,25 +96,31 @@ function Footer() {
                     "mailto:contact@gym-volontaire-vsa.fr")
                 }
               >
-                <Mail size={25} className="text-green-700/70 bg-transparent" />
+                <Mail
+                  size={25}
+                  className="text-muted-foreground bg-transparent"
+                />
                 contact@gym-volontaire-vsa.fr
               </li>
               <li
                 className="flex items-center gap-2 cursor-pointer"
                 onClick={() => (window.location.href = "tel:0601020304")}
               >
-                <Phone size={25} className="text-green-700/70 bg-transparent" />
+                <Phone
+                  size={25}
+                  className="text-muted-foreground bg-transparent"
+                />
                 06 79 95 30 48
               </li>
             </ul>
           </div>
           <div>
-            <h3 className="text-sm font-bold uppercase tracking-wider ">
+            <h3 className="text-sm text-foreground font-bold uppercase tracking-wider ">
               Suivez-nous
             </h3>
             <div className="flex mt-4 space-x-4">
               <a
-                className="hover:text-primary transition-colors"
+                className="text-muted-foreground transition-colors"
                 target="_blank"
                 href="https://www.facebook.com/people/Gymnastique-volontaire-VSA/100069466486782/"
               >
@@ -129,8 +145,10 @@ function Footer() {
             </div>
           </div>
         </div>
-        <div className="mt-8 border-t border-card-border-light dark:border-card-border-dark pt-8 text-center text-sm opacity-40">
-          <p>© 2025 Gym Volontaire. Tous droits réservés.</p>
+        <div className="mt-8 border-t border-border pt-8 text-center text-sm opacity-40">
+          <p className="text-muted-foreground">
+            © 2025 Gym Volontaire. Tous droits réservés.
+          </p>
         </div>
       </div>
     </footer>

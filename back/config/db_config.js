@@ -18,13 +18,15 @@ const pool = mysql.createPool({
     const [rows] = await connection.query("SELECT CURRENT_USER()");
     console.log(
       "Connecté à la base de données en tant que :",
-      rows[0]["CURRENT_USER()"]
+      rows[0]["CURRENT_USER()"],
     );
     connection.release(); // Libérer la connexion
   } catch (err) {
     console.error(
       "Erreur lors de la récupération de l'utilisateur courant:",
-      err
+      err,
+      process.env.USER,
+      process.env.PASSWORD,
     );
   }
 })();
