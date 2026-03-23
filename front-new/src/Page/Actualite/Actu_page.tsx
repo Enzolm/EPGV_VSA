@@ -140,7 +140,7 @@ function Actu_page() {
                   value="italic"
                   className="data-[state=on]:bg-primary data-[state=on]:text-gray-100 transition-colors duration-300 ease-in-out"
                 >
-                  Evnènements
+                  Événements
                 </ToggleGroupItem>
                 <ToggleGroupItem
                   value="strikethrough"

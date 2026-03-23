@@ -127,10 +127,11 @@ const Contact = () => {
                   )}
                 />
                 <p className="max-w-md text-foreground">
-                  En soumettant ce formulaire, j'accepte que les informations
-                  saisies dans ce formulaire soient exploitées pour permettre de
-                  me recontacter ou dans le cadre de la relation commerciale qui
-                  découlerait de cette demande.
+                  En soumettant ce formulaire, vous acceptez que les
+                  informations renseignées soient utilisées uniquement pour vous
+                  répondre. Elles ne seront jamais transmises à des tiers.
+                  Conformément au RGPD, vous pouvez demander leur suppression à
+                  tout moment en nous contactant.
                   <span className="text-red-500">*</span>
                 </p>
               </div>

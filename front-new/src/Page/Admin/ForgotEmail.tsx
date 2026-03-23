@@ -28,7 +28,12 @@ const ForgotPasswordEmail = () => {
   return (
     <div className="w-screen flex flex-col h-dvh items-center text-center justify-center align-middle">
       <div className="bg-white rounded-lg flex flex-col items-center p-6 shadow-md">
-        <img className="h-32 w-32" src={Logo} alt="Logo EPGV" />
+        <img
+          className="h-32 w-32 hover:cursor-pointer"
+          src={Logo}
+          alt="Logo EPGV"
+          onClick={() => navigate("/")}
+        />
         <h1 className="text-2xl font-semibold mb-6">
           Réinitialisation du mot de passe
         </h1>

@@ -153,7 +153,7 @@ const useActiveAccount = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const createPassword = async (data: { token: string | undefined; password: string }) => {
+  const createPassword = async (data: { token: string | null; password: string }) => {
     if (!data.token) {
       setError("Token manquant.");
       return { success: false, message: "Token manquant." };

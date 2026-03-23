@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Logo from "@/assets/logo_sf.png";
 import { useCheckTokenCreationValidity } from "@/hooks/useUtilisateur";
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useSearchParams, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { useActiveAccount } from "@/hooks/useUtilisateur";
@@ -15,7 +15,8 @@ type FormData = {
 
 const Create_MDP = () => {
   const navigate = useNavigate();
-  const { token } = useParams();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token");
   const [tokenData, setTokenData] = useState<any>(null);
   const { checkTokenValidity, loading, error } =
     useCheckTokenCreationValidity();
@@ -54,7 +55,7 @@ const Create_MDP = () => {
   }, [tokenData]);
 
   const onSubmit = async (data: FormData) => {
-    if (data.password !== data.confirmPassword) {
+    if (data.password !== data.confirmPassword && token !== null) {
       setSamePasswordError("Les mots de passe ne correspondent pas");
     } else {
       setSamePasswordError(null);
@@ -74,7 +75,12 @@ const Create_MDP = () => {
   return (
     <div className="w-screen flex flex-col h-full items-center  text-end justify-center align-middle">
       <div className="bg-white rounded-lg flex flex-col items-center p-10 shadow-md">
-        <img className="h-32 w-32" src={Logo} alt="Logo EPGV" />
+        <img
+          className="h-32 w-32 hover:cursor-pointer"
+          src={Logo}
+          alt="Logo EPGV"
+          onClick={() => navigate("/")}
+        />
         {loading && <p>Vérification du token...</p>}
         {tokenData && tokenData.valid && (
           <>

@@ -49,7 +49,7 @@ const ForgotPassword = () => {
         toast.success(
           response.message || "Mot de passe réinitialisé avec succès",
         );
-        // navigate("/login");
+        navigate("/login");
       } else {
         setSamePasswordError(
           response.message ||
@@ -62,7 +62,12 @@ const ForgotPassword = () => {
   return (
     <div className="w-screen flex flex-col h-dvh items-center  text-end justify-center align-middle">
       <div className="bg-white rounded-lg flex flex-col items-center p-6 shadow-md">
-        <img className="h-32 w-32" src={Logo} alt="Logo EPGV" />
+        <img
+          className="h-32 w-32 hover:cursor-pointer"
+          src={Logo}
+          alt="Logo EPGV"
+          onClick={() => navigate("/")}
+        />
         <h1 className="text-2xl font-semibold mb-6">
           Rénitialiser son mot de passe
         </h1>

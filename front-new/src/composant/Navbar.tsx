@@ -2,7 +2,7 @@ import logo_sf from "@/assets/logo_sf.png";
 import { useLocation, useNavigate } from "react-router";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { ChevronRight, Moon, Sun } from "lucide-react";
+import { ChevronRight, Moon, Sun, ExternalLink } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 
 function Navbar() {
@@ -33,7 +33,12 @@ function Navbar() {
   return (
     <nav className=" bg-background p-2 pl-4 pr-4 md:pr-10 md:pl-10 text-primary flex justify-between items-center shadow-md border-b border-border">
       <div>
-        <img className="h-20 w-20" src={logo_sf} alt="Logo de l'association" />
+        <img
+          className="h-20 w-20 hover:cursor-pointer"
+          src={logo_sf}
+          alt="Logo de l'association"
+          onClick={() => navigate("/")}
+        />
       </div>
       <div className="flex  gap-3 md:hidden align-middle" ref={toggleRef}>
         <button
@@ -89,14 +94,20 @@ function Navbar() {
           <ChevronRight className=" inline ml-2 mb-1" size={18} />
         </button>
         <button
-          onClick={() => navigate("/sportsante")}
           className={`flex border-t border-border items-center justify-between pr-6 w-full text-left cursor-pointer pl-6 pb-4 pt-4 text-xl ${
             location.pathname === "/sportsante"
               ? "text-foreground"
               : "text-muted-foreground"
           }`}
         >
-          Sport Santé
+          <a
+            className="flex flex-wrap items-center align-middle gap-1"
+            href="https://ffepgv.fr/dirigeant/label-qualite-sport-sante"
+            target="_blank"
+          >
+            Sport Santé
+            <ExternalLink className="w-4 h-4 text-muted-foreground" />
+          </a>
           <ChevronRight className=" inline ml-2 mb-1" size={18} />
         </button>
         <button
@@ -135,12 +146,18 @@ function Navbar() {
         </button>
         <button
           id="hover-animation"
-          onClick={() => navigate("/sportsante")}
           className={`cursor-pointer hover:text-foreground font-semibold  ${
             location.pathname === "/sportsante" ? "active text-foreground" : ""
           }`}
         >
-          Sport Santé
+          <a
+            className="flex flex-wrap items-center align-middle gap-1"
+            href="https://ffepgv.fr/dirigeant/label-qualite-sport-sante"
+            target="_blank"
+          >
+            Sport Santé
+            <ExternalLink className="w-4 h-4 text-muted-foreground" />
+          </a>
         </button>
         <div className="flex gap-2">
           <button

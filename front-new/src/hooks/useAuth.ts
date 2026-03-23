@@ -13,7 +13,7 @@ type VerifyTokenResponse = {
     role: string;
     status: string;
     isAdmin: boolean;
-  } | null;
+  } | undefined;
 };
 
 export type ChangePasswordResponse = {
@@ -33,7 +33,7 @@ const useAuth = () => {
   useEffect(() => {
     const verifyToken = async (token :string) => {
         if (!token) {
-            setIsAuthenticated({ success: false, user: null });
+            setIsAuthenticated({ success: false, user: undefined });
             setLoading(false);
         }
         try {
@@ -52,7 +52,7 @@ const useAuth = () => {
                 code: err.response?.data?.code || "NO_TOKEN",
                 message: err.response?.data?.message || "Erreur lors de la vérification du token."
             });
-            setIsAuthenticated({ success: false, user: null });
+            setIsAuthenticated({ success: false, user: undefined });
         } finally {
             setLoading(false);
         }
@@ -65,7 +65,7 @@ const useAuth = () => {
         console.log("Vérification du token", localStorage.getItem("token"));
         const verifyToken = async (token :string) => {
             if (!token) {
-                setIsAuthenticated({ success: false, user: null });
+                setIsAuthenticated({ success: false, user: undefined });
                 setLoading(false);
                 return;
             }
@@ -85,7 +85,7 @@ const useAuth = () => {
                     code: err.response?.data?.code || "UNKNOWN_ERROR",
                     message: err.response?.data?.message || "Erreur lors de la vérification du token."
                 });
-                setIsAuthenticated({ success: false, user: null });
+                setIsAuthenticated({ success: false, user: undefined });
             } finally {
                 setLoading(false);
             }
