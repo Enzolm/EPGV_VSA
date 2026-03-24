@@ -1,8 +1,7 @@
-import logo_sf from "@/assets/logo_sf.png";
+import logo_sf from "@/assets/logo_sf.webp";
 import { useLocation, useNavigate } from "react-router";
-import { Menu, X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { ChevronRight, Moon, Sun, ExternalLink } from "lucide-react";
+import { Menu, X, ChevronRight, Moon, Sun, ExternalLink } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 
 function Navbar() {
@@ -31,9 +30,13 @@ function Navbar() {
   }, [isMenuOpen]);
 
   return (
-    <nav className=" bg-background p-2 pl-4 pr-4 md:pr-10 md:pl-10 text-primary flex justify-between items-center shadow-md border-b border-border">
+    <nav
+      role="navigation"
+      className=" bg-background p-2 pl-4 pr-4 md:pr-10 md:pl-10 text-primary flex justify-between items-center shadow-md border-b border-border"
+    >
       <div>
         <img
+          aria-label="Logo"
           className="h-20 w-20 hover:cursor-pointer"
           src={logo_sf}
           alt="Logo de l'association"
@@ -42,6 +45,8 @@ function Navbar() {
       </div>
       <div className="flex  gap-3 md:hidden align-middle" ref={toggleRef}>
         <button
+          aria-label="Changer le thème"
+          aria-pressed={isDark}
           onClick={toggle}
           className="p-2 rounded-full transition-colors hover:bg-muted hover:cursor-pointer"
         >
@@ -49,6 +54,7 @@ function Navbar() {
         </button>
         {!isMenuOpen ? (
           <button
+            aria-label="Ouvrir le menu de navigation"
             className="cursor-pointer bg-transparent"
             onClick={() => setIsMenuOpen(true)}
           >
@@ -56,6 +62,7 @@ function Navbar() {
           </button>
         ) : (
           <button
+            aria-label="Fermer le menu de navigation"
             className="cursor-pointer bg-transparent"
             onClick={() => setIsMenuOpen(false)}
           >
@@ -161,6 +168,8 @@ function Navbar() {
         </button>
         <div className="flex gap-2">
           <button
+            aria-label="Changer le thème"
+            aria-pressed={isDark}
             onClick={toggle}
             className="text-foreground p-2 rounded-full transition-colors hover:bg-muted hover:cursor-pointer"
           >

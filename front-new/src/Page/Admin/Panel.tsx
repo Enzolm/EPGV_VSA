@@ -9,9 +9,6 @@ import Utilisateur_creation from "./Utilisateur/Utilisateur_creation";
 const Panel = () => {
   const location = useLocation();
 
-  console.log("Current pathname:", location.pathname);
-  console.log("isVisible state:", location.pathname === "/gestion/actus");
-
   return (
     <>
       <div className="flex h-dvh w-dvw">

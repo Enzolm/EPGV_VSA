@@ -28,7 +28,6 @@ const useAuth = () => {
   const [error, setError] = useState<{code: string, message: string} | null>(null);
   const { setUser } = useUserStore();
   const location = useLocation();
-  console.log("useAuth - location.pathname:", location.pathname);
 
   useEffect(() => {
     const verifyToken = async (token :string) => {
@@ -62,7 +61,6 @@ const useAuth = () => {
 }, [location.pathname]);
 
     useEffect(() => {
-        console.log("Vérification du token", localStorage.getItem("token"));
         const verifyToken = async (token :string) => {
             if (!token) {
                 setIsAuthenticated({ success: false, user: undefined });

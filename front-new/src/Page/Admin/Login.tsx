@@ -1,4 +1,4 @@
-import Logo from "../../assets/logo_sf.png";
+import Logo from "../../assets/logo_sf.webp";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,6 @@ const Login = () => {
   }, [isAuthenticated, navigate]);
 
   const onSubmit = (data: FormData) => {
-    console.log("Tentative de connexion avec les données:", data);
     login(data.email, data.password).then((success) => {
       if (success) {
         navigate("/gestion");

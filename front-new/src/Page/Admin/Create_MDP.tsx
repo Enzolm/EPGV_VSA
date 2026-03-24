@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Logo from "@/assets/logo_sf.png";
+import Logo from "@/assets/logo_sf.webp";
 import { useCheckTokenCreationValidity } from "@/hooks/useUtilisateur";
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router";
@@ -34,7 +34,6 @@ const Create_MDP = () => {
       }
     };
     verify();
-    console.log("tokenData", token);
   }, [token]);
 
   useEffect(() => {
@@ -60,7 +59,6 @@ const Create_MDP = () => {
     } else {
       setSamePasswordError(null);
       const result = await createPassword({ token, password: data.password });
-      console.log("result", result);
       if (result && result.success) {
         toast.success("Mot de passe créé avec succès");
         navigate("/login");

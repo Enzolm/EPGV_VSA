@@ -13,7 +13,6 @@ function Actu_info() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { article, loading, error } = useArticleById(id || null);
-  console.log("Article chargé dans Actu_info:", article);
   window.scrollTo({ top: 0, behavior: "instant" });
 
   return (

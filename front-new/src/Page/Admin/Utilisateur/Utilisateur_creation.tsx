@@ -32,7 +32,6 @@ const Utilisateur_creation = () => {
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    console.log(data);
     const response = await createUtilisateur({
       nom: data.nom,
       prenom: data.prenom,

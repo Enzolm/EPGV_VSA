@@ -6,8 +6,6 @@ const createPublication = async (req, res) => {
   let uploadedFilePath = null;
 
   try {
-    console.log("req.file:", req.file);
-    console.log("req.body:", req.body);
     const { titre, type, statut, description } = req.body;
 
     // Le nom du fichier WebP converti est disponible ici
@@ -39,15 +37,6 @@ const createPublication = async (req, res) => {
     } else {
       publication_date = null;
     }
-
-    console.log("Données pour insertion:", {
-      titre,
-      type,
-      statut,
-      img,
-      publication_date,
-      description,
-    });
 
     const query =
       "INSERT INTO publication (titre, type, statut, img, publication_date, description) VALUES (?, ?, ?, ?, ?, ?)";

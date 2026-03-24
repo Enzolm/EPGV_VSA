@@ -38,7 +38,6 @@ const UtilisateurEdition = ({
   }, [id, utilisateur, setValue]);
 
   const onSubmit: SubmitHandler<any> = async (data) => {
-    console.log("Données du formulaire à soumettre:", data);
     if (id) {
       const response = await editProfile(data, id);
       if (response.success) {

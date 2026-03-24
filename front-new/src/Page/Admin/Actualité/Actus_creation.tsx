@@ -42,9 +42,7 @@ function Actus_creation() {
   };
 
   const onSubmit: SubmitHandler<Partial<Article>> = async (data) => {
-    console.log("Submitting article with data:", editorValue);
     if (editorValue) {
-      console.log("Flushing pending image uploads...");
       await flushPendingImageUploads(editorValue);
     }
 
@@ -58,16 +56,6 @@ function Actus_creation() {
     if (data.img && data.img[0]) {
       formData.append("img", data.img[0]);
     }
-
-    console.log("Données envoyées:", {
-      titre: data.titre,
-      type: data.type,
-      description: editorValue ? editorValue.getHTML() : "",
-      statut: isDraft ? "brouillon" : "publie",
-      hasFile: !!(data.img && data.img[0]),
-    });
-
-    console.log("FormData entries:" + formData);
 
     createArticle(formData);
   };

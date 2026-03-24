@@ -81,8 +81,6 @@ const userUpload = multer({
 });
 
 const userConvertToWebP = async (req, res, next) => {
-  console.log("userConvertToWebP middleware appelé", req.file, req.body);
-
   if (!req.file && req.body.id) {
     return next();
   }

@@ -1,4 +1,4 @@
-import logo_footer from "@/assets/logo_sf.png";
+import logo_footer from "@/assets/logo_sf.webp";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { useNavigate } from "react-router";
 
@@ -120,6 +120,7 @@ function Footer() {
             </h3>
             <div className="flex mt-4 space-x-4">
               <a
+                aria-label="La page Facebook de l'association"
                 className="text-muted-foreground transition-colors"
                 target="_blank"
                 href="https://www.facebook.com/people/Gymnastique-volontaire-VSA/100069466486782/"

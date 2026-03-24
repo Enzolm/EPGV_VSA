@@ -1,4 +1,4 @@
-import logo_sf from "@/assets/logo_sf.png";
+import logo_sf from "@/assets/logo_sf.webp";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { useUserStore } from "@/lib/store/userStore";
@@ -38,10 +38,6 @@ function AdminNavBar() {
       fetchImageUrl(user.id.toString());
     }
   }, [user?.id, open]);
-
-  useEffect(() => {
-    console.log("################## :", user);
-  }, [user, open]);
 
   return (
     <>

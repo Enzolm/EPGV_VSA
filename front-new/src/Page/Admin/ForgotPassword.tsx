@@ -1,4 +1,4 @@
-import Logo from "../../assets/logo_sf.png";
+import Logo from "../../assets/logo_sf.webp";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,6 @@ const ForgotPassword = () => {
   const { resetPassword, loading } = useForgotPassword();
 
   useEffect(() => {
-    console.log("Token reçu:", token);
     if (!token) {
       navigate("/");
     }
@@ -38,7 +37,6 @@ const ForgotPassword = () => {
     if (data.password !== data.confirmPassword) {
       setSamePasswordError("Les mots de passe ne correspondent pas");
     } else {
-      console.log("Données du formulaire:", data);
       setSamePasswordError(null);
       const response = await resetPassword(
         token,

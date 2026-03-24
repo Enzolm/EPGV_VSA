@@ -62,8 +62,6 @@ function ActusGesiton() {
     return temp.textContent || temp.innerText || "";
   }
 
-  console.log("Articles administrateur chargés:", articles);
-
   return (
     <div className="flex flex-nowrap gap-8 h-full">
       <Dialog open={DialogDeleteOpen} onOpenChange={setDialogDeleteOpen}>

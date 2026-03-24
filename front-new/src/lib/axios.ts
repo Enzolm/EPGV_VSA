@@ -20,10 +20,6 @@ const api = axios.create({
 
     api.interceptors.response.use(
       (response) => {
-        console.log(
-          `${response.config.method?.toUpperCase()} ${response.config.url}`,
-          response.data
-        );
         return response;
       },
       (error) => {

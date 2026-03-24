@@ -62,7 +62,6 @@ export const useCreateArticle = () => {
       
       if (response.data.success) {
         setSuccess(true);
-        console.log('Article créé:', response.data);
       } else {
         setError(response.data.message);
       }
@@ -168,7 +167,6 @@ export const useDeleteArticle = (id_publication: string) => {
             const response = await api.delete(`/publications/delete/${id_publication}`);
             if (response.data.success) {
                 setSuccess(true);
-                console.log('Article supprimé:', response.data);
             } else {
                 setError(response.data.message);
             }
